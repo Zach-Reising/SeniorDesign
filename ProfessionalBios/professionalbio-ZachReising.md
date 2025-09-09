@@ -1,5 +1,5 @@
 
-# Professional Biography -Zach Reising
+# Professional Biography - Zach Reising
 ## Contact Info
 - reisinzs@mail.uc.edu
 
