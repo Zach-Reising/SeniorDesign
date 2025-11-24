@@ -1,7 +1,7 @@
 
 # Crowdsourced Litter Pickup Website
 
-The focus of our project is to design and implement a crowdsourced litter pickup website that empowers community members to mark and report locations of heavy litter accumulation in their neighborhoods. This geotagged data will be shared with volunteer groups, nonprofit organizations, and city officials to help prioritize and coordinate cleanup efforts efficiently. Our project integrates front-end web development, backend database management, and interactive user engagement features to create a seamless experience. By combining technology, civic participation, and environmental sustainability, this platform promotes greater community involvement in maintaining cleaner, healthier public spaces.
+We are building a crowdsourced litter-pickup site where residents geotag areas with heavy trash. Shared data helps volunteers and officials prioritize cleanups. The platform combines front-end, backend, and engagement features to support cleaner public spaces.
 
 ## Team Members
 - Zach Reising (CS) [reisinzs@mail.UC.edu](mailto:reisinzs@mail.UC.edu)
