@@ -18,8 +18,27 @@ We are building a crowdsourced litter-pickup site where residents geotag areas w
 2. [User Stories and Design Diagrams](./DesignDiagrams/)
     - [User Stories](./DesignDiagrams/User_Stories.md)
     - [Level 0 Diagram](./DesignDiagrams/Design_D0.png)
+      - D0 represents the simplest system version with three core parts:
+      - Client (Website): User-facing interface that sends requests and displays data.
+      - Server (Backend API): Processes client requests and communicates with the database.
+      - Database: Stores user data and marker data.
     - [Level 1 Diagram](./DesignDiagrams/Design_D1.png)
+      - D1 expands the system to support mapping features and more complex user interactions:
+      - User Interface: Sends reports or data requests and renders returned information.
+      - Backend API & Logic: Handles data processing, generates map data, and interacts with storage.
+      - Interactive Map: Receives generated map data from the backend and displays the map to users.
+      - Database: Stores reports, marker data, and other persistent records.
     - [Level 2 Diagram](./DesignDiagrams/Design_D2.png)
+      - D2 introduces authentication, roles, and expanded functionality inside the UI:
+      - Log In / Sign Up & User: Provides authentication and manages user accounts.
+      - User Interface: Central hub for all user actions, including:
+        - Report: Submit new cleanup reports with details and photos.
+        - Search/Filter: Locate markers using criteria such as status or location.
+        - Resolve Markers: Upload cleanup evidence and resolution data.
+        - Organizations: Allow organization leaders to manage cleanup activities.
+        - Administrators: Assign and manage user roles.
+      - Backend: Processes UI requests and performs all logic before contacting the database.
+      - Database: Stores user accounts, map/marker details, cleanup status, and other system data.
 3. Project Tasks and Timeline
     - [Task List](./Homework/TaskList.md)
     - [Milestones, Timeline, and Effort Matrix](./Homework/Milestones,%20Timeline%20and%20Effort%20Matrix.md)
