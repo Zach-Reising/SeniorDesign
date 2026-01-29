@@ -1,0 +1,13 @@
+@import '../functions/font.scss';
+
+@mixin font-size() {
+    $cl-font-size: 10 12 14 15 16 17 18 20 24 48;
+
+    @each $size in $cl-font-sizes {
+        .cl-font-size-#{$size} {
+            font-size: convert-to-rem($size);
+        }
+    }
+}
+
+@include font-size();

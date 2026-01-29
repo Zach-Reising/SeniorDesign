@@ -1,0 +1,11 @@
+@function get-rgb-list($color) {
+    @return #{red($color)}, #{green($color)}, #{blue($color)};
+}
+
+@function get-shade($color) {
+    @return mix(#000, $color, 12%);
+}
+
+@function get-tint($color) {
+    @return mix(#fff, $color, 10%);
+}

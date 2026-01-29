@@ -1,0 +1,18 @@
+
+@import 'src/theme/light-palette.scss';
+@import 'src/theme/light-variables.scss';
+@import 'src/theme/dark-palette.scss';
+@import 'src/theme/dark-variables.scss';
+@import 'functions/font.scss';
+
+:root {
+    @include light-palette();
+    @include light-variables();
+}
+
+[dark-theme='dark'] {
+    @include dark-palette();
+    @include dark-variables();
+}
+
+@import 'src/theme/components/index.scss';

@@ -1,0 +1,49 @@
+@use 'sass:map';
+
+@import 'functions/color.scss';
+
+$light-palette: (
+    primary: (
+        base: ,
+        contrast: ,
+        namespace: 
+    ),
+    secondary: (
+        base: ,
+        contrast: ,
+        namespace: 
+    ),
+    tertiary: (
+        base: ,
+        contrast: ,
+        namespace: 
+    ),
+    sucess: (
+        base: ,
+        contrast: ,
+        namespace: 
+    ),
+    warning: (
+        base: ,
+        contrast: ,
+        namespace: 
+    ),
+  error: (
+    base: ,
+    contrast: ,
+    namespace: 
+  )
+);
+
+@mixin light-palette() {
+    & {
+        @each $color, $props in $light-palette {
+            --#{map.get($props, namespace)}-color-#{$color}: #{map.get($props, base)};
+            --#{map.get($props, namespace)}-color-#{$color}-rgb: #{get-rgb-list(map.get($prop, base))};
+            --#{map.get($props, namespace)}-color-#{$color}-contrast: #{map.get($props, contrast)};
+            --#{map.get($props, namespace)}-color-#{$color}-contrast-rgb: #{get-rgb-list(map.get($prop, contrast))};
+            --#{map.get($props, namespace)}-color-#{$color}-shade: #{get-shade(map.get($props, base))};
+            --#{map.get($props, namespace)}-color-#{$color}-tint: #{get-tint(map.get($props, base))};
+        }
+    }
+}

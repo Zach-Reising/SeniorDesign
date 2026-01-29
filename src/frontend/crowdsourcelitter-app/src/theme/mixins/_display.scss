@@ -1,0 +1,19 @@
+@mixin display-property() {
+    $cl-display-properties: flex grid inline-flex inline-grid;
+
+    @each $display in $cl-display-properties {
+        .cl-display-#{$display} {
+            display: $display;
+        }
+    }
+
+    .cl-height-100{
+        height: 100%;
+    }
+
+    .cl-width-100 {
+        width: 100%;
+    }
+}
+
+@include display-property();

@@ -1,0 +1,41 @@
+@mixin spacing() {
+  $cl-spacing-values: 0 4 8 12 16 24 32 40;
+
+  @each $space in $cl-spacing-values {
+    // Padding
+    .cl-padding-#{$space} {
+      padding: #{$space}px !important;
+    }
+    .cl-padding-top-#{$space} {
+      padding-top: #{$space}px !important;
+    }
+    .cl-padding-bottom-#{$space} {
+      padding-bottom: #{$space}px !important;
+    }
+    .cl-padding-left-#{$space} {
+      padding-left: #{$space}px !important;
+    }
+    .cl-padding-right-#{$space} {
+      padding-right: #{$space}px !important;
+    }
+
+    // Margin
+    .cl-margin-#{$space} {
+      margin: #{$space}px !important;
+    }
+    .cl-margin-top-#{$space} {
+      margin-top: #{$space}px !important;
+    }
+    .cl-margin-bottom-#{$space} {
+      margin-bottom: #{$space}px !important;
+    }
+    .cl-margin-left-#{$space} {
+      margin-left: #{$space}px !important;
+    }
+    .cl-margin-right-#{$space} {
+      margin-right: #{$space}px !important;
+    }
+  }
+}
+
+@include spacing();

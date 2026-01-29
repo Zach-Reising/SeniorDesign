@@ -1,0 +1,7 @@
+{
+  "name": "crowdsourcelitter-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}

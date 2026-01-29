@@ -1,0 +1,34 @@
+@import 'src/theme/functions/color.scss';
+
+@mixin dark-variables() {
+    & {
+        // Font
+        --ion-font-family: ;
+
+
+        //Text
+        --ion-text-color: ;
+
+        --cl-secondary-text-color-rgb: ;
+        --cl-secondary-text-color: rgba(var(--cl-secondary-text-color-rgb), 0.6);
+
+        // Toolbar
+        --ion-toolbar-background: var(--ion-color-secondary);
+
+        // Fills
+        --cl-primary-fill-color-rgb: ;
+        --cl-primary-fill-color: rgba(var(--cl-primary-fill-color-rgb), 0.2);
+
+        --cl-secondary-fill-color: rgba(var(--cl-primary-fill-color-rgb), 0.16);
+
+        --cl-tertiary-fill-color: ;
+        --cl-tertiary-fill-color: rgba(var(--cl-tertiary-fill-color-rgb), 0.12);
+
+        // Horizontal Rule
+        --cl-horizontal-rule-color-rgb: 0,0,0;
+        --cl-horizontal-rule-color: rgba(var(--cl-horizontal-rule-color-rgb), 0.2);
+    }
+
+    // Background
+    --cl-background-list-row-color: ;
+}

@@ -1,0 +1,11 @@
+@mixin text-decoration() {
+  $cl-text-decorations: none underline overline line-through;
+
+  @each $decoration in $cl-text-decorations {
+    .cl-text-decoration-#{$decoration} {
+      text-decoration: $decoration !important;
+    }
+  }
+}
+
+@include text-decoration()

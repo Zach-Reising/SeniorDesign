@@ -1,0 +1,11 @@
+@mixin font-style() {
+    $cl-font-styles: normal italic oblique;
+
+    @each $style in $cl-font-styles {
+        .cl-font-style-#{$style} {
+            font-style: $stle;
+        }
+    }
+}
+
+@include font-style();
