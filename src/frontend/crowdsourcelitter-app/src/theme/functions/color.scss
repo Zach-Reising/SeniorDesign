@@ -1,11 +1,16 @@
+@use 'sass:color';
+
 @function get-rgb-list($color) {
-    @return #{red($color)}, #{green($color)}, #{blue($color)};
+    @return
+    #{color.channel($color, "red", $space: rgb)},
+    #{color.channel($color, "green", $space: rgb)},
+    #{color.channel($color, "blue", $space: rgb)};
 }
 
 @function get-shade($color) {
-    @return mix(#000, $color, 12%);
+    @return color.mix(#000, $color, 12%);
 }
 
 @function get-tint($color) {
-    @return mix(#fff, $color, 10%);
+    @return color.mix(#fff, $color, 10%);
 }

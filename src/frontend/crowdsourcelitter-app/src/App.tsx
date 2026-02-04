@@ -15,12 +15,20 @@ import { IonReactRouter } from '@ionic/react-router';
 
 /* Theme variables */
 import './theme/variables.scss';
+import './global.scss'
+
+import Home from './pages/Home';
 
 setupIonicReact();
 
 const App: React.FC = () => (
   <IonApp>
-     
+     <IonReactRouter>
+        <IonRouterOutlet>
+          <Route exact path="/home" component={Home} />
+          <Redirect exact path="/" to="/home" />
+        </IonRouterOutlet>
+     </IonReactRouter>
   </IonApp>
 );
 

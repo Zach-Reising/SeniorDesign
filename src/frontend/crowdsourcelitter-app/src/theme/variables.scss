@@ -1,18 +1,17 @@
 
-@import 'src/theme/light-palette.scss';
-@import 'src/theme/light-variables.scss';
-@import 'src/theme/dark-palette.scss';
-@import 'src/theme/dark-variables.scss';
-@import 'functions/font.scss';
+@use 'theme/light-palette';
+@use 'theme/light-variables';
+@use 'theme/dark-palette';
+@use 'theme/dark-variables';
+@use 'functions/font';
+@use 'theme/components/index';
 
 :root {
-    @include light-palette();
-    @include light-variables();
+    @include light-palette.light-palette();
+    @include light-variables.light-variables();
 }
 
 [dark-theme='dark'] {
-    @include dark-palette();
-    @include dark-variables();
+    @include dark-palette.dark-palette();
+    @include dark-variables.dark-variables();
 }
-
-@import 'src/theme/components/index.scss';

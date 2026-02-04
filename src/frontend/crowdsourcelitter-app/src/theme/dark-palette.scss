@@ -1,49 +1,49 @@
 @use 'sass:map';
 
-@import 'functions/color.scss';
+@use 'functions/color' as color;
 
 $dark-palette: (
     primary: (
-        base: ,
-        contrast: ,
-        namespace: 
+        base: #66BB6A,
+        contrast: #0E1A10,
+        namespace: "ion"
     ),
     secondary: (
-        base: ,
-        contrast: ,
-        namespace: 
+        base: #4FC3F7,
+        contrast: #081821,
+        namespace: "ion" 
     ),
     tertiary: (
-        base: ,
-        contrast: ,
-        namespace: 
+        base: #BCAAA4,
+        contrast: #1A1311,
+        namespace: "ion"
     ),
-    sucess: (
-        base: ,
-        contrast: ,
-        namespace: 
+    success: (
+        base: #81C784,
+        contrast: #0E1A10,
+        namespace: "ion"
     ),
     warning: (
-        base: ,
-        contrast: ,
-        namespace: 
+        base: #FFD54F,
+        contrast: #1B1F1B,
+        namespace: "ion"
     ),
-  error: (
-    base: ,
-    contrast: ,
-    namespace: 
-  )
+    error: (
+        base: #EF5350,
+        contrast: #2B0B0B,
+        namespace: "ion"
+    )
 );
 
 @mixin dark-palette() {
     & {
         @each $color, $props in $dark-palette {
             --#{map.get($props, namespace)}-color-#{$color}: #{map.get($props, base)};
-            --#{map.get($props, namespace)}-color-#{$color}-rgb: #{get-rgb-list(map.get($prop, base))};
+            --#{map.get($props, namespace)}-color-#{$color}-rgb: #{color.get-rgb-list(map.get($props, base))};
             --#{map.get($props, namespace)}-color-#{$color}-contrast: #{map.get($props, contrast)};
-            --#{map.get($props, namespace)}-color-#{$color}-contrast-rgb: #{get-rgb-list(map.get($prop, contrast))};
-            --#{map.get($props, namespace)}-color-#{$color}-shade: #{get-shade(map.get($props, base))};
-            --#{map.get($props, namespace)}-color-#{$color}-tint: #{get-tint(map.get($props, base))};
+            --#{map.get($props, namespace)}-color-#{$color}-contrast-rgb: #{color.get-rgb-list(map.get($props, contrast))};
+            --#{map.get($props, namespace)}-color-#{$color}-shade: #{color.get-shade(map.get($props, base))};
+            --#{map.get($props, namespace)}-color-#{$color}-tint: #{color.get-tint(map.get($props, base))};
         }
     }
 }

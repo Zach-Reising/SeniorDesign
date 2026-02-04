@@ -10,6 +10,14 @@ export default defineConfig({
     react(),
     legacy()
   ],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern',
+        loadPaths: ['src'],
+      },
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',

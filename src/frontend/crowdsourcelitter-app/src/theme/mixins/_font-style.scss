@@ -3,7 +3,7 @@
 
     @each $style in $cl-font-styles {
         .cl-font-style-#{$style} {
-            font-style: $stle;
+            font-style: $style;
         }
     }
 }

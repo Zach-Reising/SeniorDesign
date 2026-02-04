@@ -4,36 +4,52 @@
   @each $space in $cl-spacing-values {
     // Padding
     .cl-padding-#{$space} {
-      padding: #{$space}px !important;
+      padding: #{$space}px;
     }
     .cl-padding-top-#{$space} {
-      padding-top: #{$space}px !important;
+      padding-top: #{$space}px;
     }
     .cl-padding-bottom-#{$space} {
-      padding-bottom: #{$space}px !important;
+      padding-bottom: #{$space}px;
     }
     .cl-padding-left-#{$space} {
-      padding-left: #{$space}px !important;
+      padding-left: #{$space}px;
     }
     .cl-padding-right-#{$space} {
-      padding-right: #{$space}px !important;
+      padding-right: #{$space}px;
+    }
+    .cl-padding-horizontal-#{$space} {
+      padding-right: #{$space}px;
+      padding-left: #{$space}px;
+    }
+    .cl-padding-vertical-#{$space} {
+      padding-top: #{$space}px;
+      padding-bottom: #{$space}px;
     }
 
     // Margin
     .cl-margin-#{$space} {
-      margin: #{$space}px !important;
+      margin: #{$space}px;
     }
     .cl-margin-top-#{$space} {
-      margin-top: #{$space}px !important;
+      margin-top: #{$space}px;
     }
     .cl-margin-bottom-#{$space} {
-      margin-bottom: #{$space}px !important;
+      margin-bottom: #{$space}px;
     }
     .cl-margin-left-#{$space} {
-      margin-left: #{$space}px !important;
+      margin-left: #{$space}px;
     }
     .cl-margin-right-#{$space} {
-      margin-right: #{$space}px !important;
+      margin-right: #{$space}px;
+    }
+    .cl-margin-horizontal-#{$space} {
+      margin-right: #{$space}px;
+      margin-left: #{$space}px;
+    }
+    .cl-margin-vertical-#{$space} {
+      margin-top: #{$space}px;
+      margin-bottom: #{$space}px;
     }
   }
 }

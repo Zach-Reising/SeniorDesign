@@ -1,27 +1,27 @@
-@import 'src/theme/functions/color.scss';
+@use 'theme/functions/color' as color;
 
 @mixin light-variables() {
     & {
         // Font
-        --ion-font-family: ;
+        --ion-font-family: 'Roboto';
 
 
         //Text
-        --ion-text-color: ;
+        --ion-text-color: #1B1F1B;
 
-        --cl-secondary-text-color-rgb: ;
+        --cl-secondary-text-color-rgb: 79, 91, 80;
         --cl-secondary-text-color: rgba(var(--cl-secondary-text-color-rgb), 0.6);
 
         // Toolbar
         --ion-toolbar-background: var(--ion-color-secondary);
 
         // Fills
-        --cl-primary-fill-color-rgb: ;
+        --cl-primary-fill-color-rgb: 46, 125, 50;
         --cl-primary-fill-color: rgba(var(--cl-primary-fill-color-rgb), 0.2);
 
         --cl-secondary-fill-color: rgba(var(--cl-primary-fill-color-rgb), 0.16);
 
-        --cl-tertiary-fill-color: ;
+        --cl-tertiary-fill-color-rgb: 141, 110, 99;
         --cl-tertiary-fill-color: rgba(var(--cl-tertiary-fill-color-rgb), 0.12);
 
         // Horizontal Rule
@@ -30,5 +30,5 @@
     }
 
     // Background
-    --cl-background-list-row-color: ;
+    --cl-background-list-row-color: #F7F9F7;
 }

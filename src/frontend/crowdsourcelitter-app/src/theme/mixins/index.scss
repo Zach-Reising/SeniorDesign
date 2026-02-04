@@ -1,7 +1,7 @@
-@import 'font-family';
-@import 'display';
-@import 'font-size';
-@import 'font-style';
-@import 'font-weight';
-@import 'spacing';
-@import 'text-decoration';
+@forward 'font-family';
+@forward 'display';
+@forward 'font-size';
+@forward 'font-style';
+@forward 'font-weight';
+@forward 'spacing';
+@forward 'text-decoration';
