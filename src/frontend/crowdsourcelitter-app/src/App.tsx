@@ -1,6 +1,7 @@
 import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
+import { AuthProvider } from './context/AuthContext';
 
 
 
@@ -17,18 +18,19 @@ import { IonReactRouter } from '@ionic/react-router';
 import './theme/variables.scss';
 import './global.scss'
 
-import Home from './pages/Home';
+import { AppRoutes } from './router/AppRoutes';
 
 setupIonicReact();
 
 const App: React.FC = () => (
   <IonApp>
-     <IonReactRouter>
-        <IonRouterOutlet>
-          <Route exact path="/home" component={Home} />
-          <Redirect exact path="/" to="/home" />
-        </IonRouterOutlet>
-     </IonReactRouter>
+    <AuthProvider>
+      <IonReactRouter>
+          <IonRouterOutlet>
+            <AppRoutes />
+          </IonRouterOutlet>
+      </IonReactRouter>
+    </AuthProvider>
   </IonApp>
 );
 

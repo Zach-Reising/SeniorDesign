@@ -19,9 +19,6 @@ const Home: React.FC = () => {
             <IonContent>
                 <div className="cl-padding-8">
                     <h2>Welcome</h2>
-                    <IonButton>
-                        Go to Login
-                    </IonButton>
                 </div>
             </IonContent>
         </IonPage>
