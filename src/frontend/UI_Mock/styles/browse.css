@@ -1,0 +1,109 @@
+main{
+    padding: 3rem 0;
+}
+#org-control {
+    display: flex;
+    justify-content: flex-end; /* pushes button to the right */
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+#org-control button {
+    padding: 0.65rem 1.4rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: white;
+    
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+    transition: all 0.2s ease;
+}
+
+#org-control button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(79, 70, 229, 0.4);
+}
+
+#org-control button:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(79, 70, 229, 0.3);
+}
+/* Container holding all report-location items */
+#report-locations{
+    margin: 3rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Each card */
+.report-location {
+    display: flex;
+    align-items: stretch;
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    overflow: hidden; /* important for rounded image corners */
+    background: #fff;
+    min-height: 140px;
+    min-width: 600px;
+}
+
+/* Left image */
+.report-location img {
+    width: 200px;
+    height: 100%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+/* Middle content */
+.report-location section {
+    flex: 1;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+}
+
+.report-location section h2 {
+    margin: 0;
+}
+
+.report-location section div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.report-location section span {
+    display: block;
+}
+
+/* Right button container */
+.report-location > div:last-child {
+    width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+}
+
+/* Button fills right side like image */
+.report-location button {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #4CAF50;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.report-location button:hover {
+    background: #45a049;
+}

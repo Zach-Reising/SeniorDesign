@@ -1,0 +1,100 @@
+#challenge > h2{
+    align-self: center;
+}
+
+#challenge{
+    display: flex;
+    flex-direction: column;
+    
+
+    margin: 1rem 0;
+    background-color: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    min-width: 15rem;
+
+    font-family: sans-serif;
+    color: black;
+}
+
+#challenge-form{
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+#challenge-form > input[type=text] {
+    border-radius: 1.5rem;
+    
+    /* height: 2rem; */
+    padding: 1rem;
+}
+
+#oauth {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+
+
+.oauth-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.oauth-btn svg,
+.oauth-btn img {
+  display: block;
+}
+
+.oauth-btn.google {
+  background: #fff;
+  color: #444;
+  border: 1px solid #ddd;
+}
+.oauth-btn.google:hover {
+  background: #f7f7f7;
+}
+
+.oauth-btn.github {
+  background: #24292e;
+  color: #fff;
+}
+.oauth-btn.github:hover {
+  background: #1b1f23;
+}
+
+.oauth-btn.facebook {
+  background: #1877f2;
+  color: #fff;
+}
+.oauth-btn.facebook:hover {
+  background: #166fe5;
+}
+
+.oauth-btn.apple {
+  background: #000;
+  color: #fff;
+}
+.oauth-btn.apple:hover {
+  background: #333;
+}
+
+.oauth-btn.generic {
+  background: #eee;
+  color: #333;
+}
+.oauth-btn.generic:hover {
+  background: #ddd;
+}
