@@ -1,4 +1,10 @@
 using CrowdSourceLitter.Infrastructure.Settings;
+using CrowdSourceLitter.Infrastructure.Providers.AuthenticationProviders;
+using CrowdSourceLitter.Infrastructure.Repositories;
+using CrowdSourceLitter.Infrastructure.Security;
+using CrowdSourceLitter.Domain.Repositories;
+using CrowdSourceLitter.Domain.Services;
+using CrowdSourceLitter.Application.Managers;
 using DotNetEnv;
 
 namespace CrowdSourceLitter
@@ -35,13 +41,36 @@ namespace CrowdSourceLitter
 
             // --- For Dependency Injection ---
             // Register Providers
+            builder.Services.AddScoped<IAuthenticationProvider, AuthenticationProvider>();
+
+            // Regist Repositories
+            builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
             // Register Services
+            builder.Services.AddScoped<IAuthCookieService, AuthCookieService>();
 
             // Register Managers
+            builder.Services.AddScoped<IAuthManager, AuthManager>();
 
             // Configure Cookie Authentication
-            builder.Services.AddAuthentication();
+            builder.Services.AddAuthentication("Cookies")
+                .AddCookie("Cookies", options =>
+                {
+                    options.Cookie.Name = "csl_auth";
+                    options.Cookie.HttpOnly = true;
+                    options.Cookie.SameSite = SameSiteMode.Lax;
+
+                    if (builder.Environment.IsDevelopment())
+                    {
+                        options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+                    }
+
+                    options.SlidingExpiration = true;
+                    options.ExpireTimeSpan = TimeSpan.FromDays(7);
+
+                    options.LoginPath = "/auth/login";
+                    options.AccessDeniedPath = "/auth/forbidden";
+                });
 
             // Add Authorization Servicdes
             builder.Services.AddAuthorization();
@@ -49,7 +78,7 @@ namespace CrowdSourceLitter
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("Ionic",
+                options.AddPolicy("Frontend",
                     policy =>
                     {
                         policy
@@ -58,7 +87,8 @@ namespace CrowdSourceLitter
                                 "http://localhost:5173"
                             )
                             .AllowAnyHeader()
-                            .AllowAnyMethod();
+                            .AllowAnyMethod()
+                            .AllowCredentials();
                     });
             });
 
@@ -83,7 +113,7 @@ namespace CrowdSourceLitter
             app.UseRouting();
 
 
-            app.UseCors("Ionic");
+            app.UseCors("Frontend");
             app.UseAuthentication();
             app.UseAuthorization();
 
