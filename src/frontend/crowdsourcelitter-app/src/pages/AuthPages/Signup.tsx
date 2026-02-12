@@ -44,9 +44,12 @@ const SignUp: React.FC = () => {
         setLoading(true);
 
         try {
-            await register(email, password);
+            const data = await register(email, password);
 
-            history.push('/login?emailVerification=true');
+            // If email confirmation is enabled user will not have a session yet
+            if (!data.session){
+                history.push('/login?emailVerification=true');
+            }
         } catch (err: any) {
             setError(err.message || 'Registration Failed');
         } finally {

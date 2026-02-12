@@ -1,46 +1,52 @@
-import {createContext, useEffect, useState } from 'react';
-import { logout as apiLogout } from '../api/authApi';
-import { apiRequest } from '../services/httpClient';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { supabase } from '../lib/supabaseClient';
+import { Session, User } from '@supabase/supabase-js';
 
-interface AuthContextValue {
+interface AuthContextType {
+    user: User | null;
+    session: Session | null;
     isAuthenticated: boolean;
     isLoading: boolean;
-    isInitialized: boolean;
-    loginSuccess: () => void;
-    logout: () => Promise<void>;
 }
 
-export const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+const AuthContext = createContext<AuthContextType>({
+    user: null,
+    session: null,
+    isAuthenticated: false,
+    isLoading: true,
+});
 
-export const AuthProvider: React.FC<{children: React.ReactNode }> = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isInitialized, setIsInitialized] = useState(false);
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [session, setSession] = useState<Session | null>(null);
+    const [isLoading, setIsLoading] =useState(true);
 
-    // This checks the session
     useEffect(() => {
-        apiRequest('/api/auth/me')
-        .then(() => setIsAuthenticated(true))
-        .catch(() => setIsAuthenticated(false))
-        .finally(() => {
+        // Get Current Session
+        supabase.auth.getSession().then(({ data } ) => {
+            setSession(data.session);
             setIsLoading(false);
-            setIsInitialized(true);
         });
-    }, [])
 
-    const loginSuccess = () => {
-        setIsAuthenticated(true);
+        // Listen for changes
+        const { data: listener } = supabase.auth.onAuthStateChange(
+            (_event, session) => {
+                setSession(session);
+            }
+        );
+
+        return () => {
+            listener.subscription.unsubscribe();
+        };
+    }, []);
+
+    const value = {
+        user: session?.user ?? null,
+        session,
+        isAuthenticated: !!session,
+        isLoading,
     };
 
-    const logout = async () => {
-        await apiLogout();
-        setIsAuthenticated(false);
-        window.location.href = '/login';
-    }
-
-    return (
-        <AuthContext.Provider
-            value={{ isAuthenticated, isLoading, isInitialized, loginSuccess, logout }}
-        >{children}</AuthContext.Provider>
-    );
+    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 };
+
+export const useAuthContext = () => useContext(AuthContext);

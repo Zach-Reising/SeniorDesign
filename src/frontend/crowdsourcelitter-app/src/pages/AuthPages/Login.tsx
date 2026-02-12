@@ -13,12 +13,12 @@ import {
     IonCardTitle,
     IonCardHeader
 } from '@ionic/react';
-import { useAuthContext } from '../../context/useAuthContext';
+import { useAuthContext } from '../../context/AuthContext';
 import { login } from '../../api/authApi';
 import FormInput from '../../components/FormInput';
 
 const Login: React.FC = () => {
-    const { isAuthenticated, isLoading, isInitialized, loginSuccess } = useAuthContext();
+    const { isAuthenticated, isLoading } = useAuthContext();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -31,7 +31,7 @@ const Login: React.FC = () => {
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         if (params.get('emailVerification') === 'true') {
-            setEmailVerificationMessage('Please Verify your email before logging in.');
+            setEmailVerificationMessage('Please verify your email before logging in.');
         }
     }, [location.search]);
 
@@ -49,9 +49,8 @@ const Login: React.FC = () => {
         try {
             await login(email, password);
 
-            loginSuccess();
+            history.replace('/dashboard');
         } catch (err: any) {
-            if (!isInitialized) return;
             setError(err.message || 'Login Failed');
         } finally {
             setLoading(false);
@@ -104,7 +103,7 @@ const Login: React.FC = () => {
                             )}
                 
                     
-                        <IonButton expand="block" type="submit" disabled={loading || !isInitialized} className="ion-margin-top">
+                        <IonButton expand="block" type="submit" disabled={loading} className="ion-margin-top">
                             Login
                         </IonButton>
                     </form>

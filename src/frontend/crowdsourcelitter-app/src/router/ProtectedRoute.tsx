@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import { useAuthContext } from '../context/useAuthContext';
+import { useAuthContext } from '../context/AuthContext';
 
 interface Props {
     component: React.ComponentType<any>;
