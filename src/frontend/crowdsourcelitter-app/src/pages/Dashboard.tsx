@@ -6,13 +6,17 @@ import {
     IonContent,
     IonButton,
 } from '@ionic/react';
-import { useAuthContext } from '../context/useAuthContext';
+import { useHistory } from 'react-router-dom';
+import { useAuthContext } from '../context/AuthContext';
+import { logout } from '../api/authApi';
 
 const Dashboard: React.FC = () => {
-    const { logout, isLoading } = useAuthContext();
+    const { isLoading } = useAuthContext();
+    const history = useHistory();
 
     const handleLogout = async () => {
         await logout();
+        history.replace('/login');
     }
 
     return (

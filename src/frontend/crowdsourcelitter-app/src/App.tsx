@@ -27,6 +27,9 @@ const App: React.FC = () => (
     <AuthProvider>
       <IonReactRouter>
           <IonRouterOutlet>
+            <Route exact path="/">
+              <Redirect to="/home"></Redirect>
+            </Route>
             <AppRoutes />
           </IonRouterOutlet>
       </IonReactRouter>

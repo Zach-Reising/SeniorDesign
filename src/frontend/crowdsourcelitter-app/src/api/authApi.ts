@@ -1,21 +1,27 @@
-import { apiRequest } from "../services/httpClient";
+import { supabase } from '../lib/supabaseClient';
 
-export function login(email: string, password: string){
-    return apiRequest<void>('/api/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({email, password}),
+export const register = async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
     });
-}
 
-export function register(email: string, password: string) {
-    return apiRequest<void>('/api/auth/register', {
-        method: 'POST',
-        body: JSON.stringify({email, password}),
-    });
-}
+    if (error) throw error;
 
-export function logout() {
-    return apiRequest<void>('/api/auth/logout', {
-        method: 'POST',
+    return data;
+};
+
+export const login = async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
     });
-}
+
+    if (error) throw error;
+
+    return data;
+};
+
+export const logout = async () => {
+    await supabase.auth.signOut();
+};
