@@ -1,30 +1,24 @@
 import React from 'react';
 import {
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
   IonContent,
-  IonButton,
+  IonPage,
   IonInput,
+  IonButton,
 } from '@ionic/react';
+import Header from '../components/Header';
 import './LoginPage.css';
 
-const Login: React.FC = () => {
+const LoginPage: React.FC = () => {
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Login</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+      <Header />
       <IonContent>
         <section id="challenge">
           <h1>Login</h1>
           <form id="challenge-form">
             <label htmlFor="uname">Username:</label>
             <IonInput type="text" id="uname" name="uname" />
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Password:</label>
             <IonInput type="password" id="password" name="password" />
             <IonButton expand="block" type="submit">
               Submit
@@ -51,4 +45,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default LoginPage;

@@ -17,7 +17,12 @@ import { IonReactRouter } from '@ionic/react-router';
 import './theme/variables.scss';
 import './global.scss'
 
-import Home from './pages/Home';
+import HomePage from './pages/HomePage';
+import BrowseOrgsPage from './pages/BrowseOrgsPage';
+import BrowseLocationsPage from './pages/BrowseLocationsPage';
+import LoginPage from './pages/LoginPage';
+import OrgPage from './pages/OrgPage';
+import SignupPage from './pages/SignupPage';
 
 setupIonicReact();
 
@@ -25,8 +30,13 @@ const App: React.FC = () => (
   <IonApp>
      <IonReactRouter>
         <IonRouterOutlet>
-          <Route exact path="/home" component={Home} />
-          <Redirect exact path="/" to="/home" />
+            <Route exact path="/home" component={HomePage} />
+            <Route exact path="/browse-orgs" component={BrowseOrgsPage} />
+            <Route exact path="/browse-locations" component={BrowseLocationsPage} />
+            <Route exact path="/login" component={LoginPage} />
+            <Route exact path="/org" component={OrgPage} />
+            <Route exact path="/signup" component={SignupPage} />
+            <Redirect exact path="/" to="/home" />
         </IonRouterOutlet>
      </IonReactRouter>
   </IonApp>
