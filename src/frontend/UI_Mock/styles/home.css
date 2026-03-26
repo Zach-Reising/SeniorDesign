@@ -1,0 +1,36 @@
+#call-to-action > img{
+    filter: blur(4px) brightness(30%);
+    
+}
+
+.img-with-text-overlay{
+    position: relative;
+}
+
+.img-with-text-overlay > img{
+    display: block;
+    width: 100%;
+}
+
+.img-with-text-overlay > section{
+    display: flex;
+    flex-direction: column;
+    
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#call-to-action > section > * {
+    display: inline;
+    margin: 0 auto;
+
+    color: white;
+    text-shadow: 0 0px 8px rgba(0,0,0,0.6);
+    text-align: center;
+}
+
+#call-to-action{
+    width: 100%;
+}
