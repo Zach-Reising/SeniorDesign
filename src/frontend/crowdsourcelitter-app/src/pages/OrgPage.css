@@ -1,0 +1,68 @@
+/* OrgPage.css */
+
+#org-details {
+  padding: 1rem;
+}
+
+#org-members {
+  padding: 1rem;
+}
+
+#org-members .ion-card {
+  margin-bottom: 1rem;
+}
+
+/* Mobile devices (320px - 480px) */
+@media (max-width: 480px) {
+  #org-details {
+    padding: 0.75rem;
+  }
+
+  #org-members {
+    padding: 0.75rem;
+  }
+
+  #org-members .ion-card {
+    margin-bottom: 0.75rem;
+  }
+}
+
+/* Tablets (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  #org-details {
+    padding: 1.5rem;
+  }
+
+  #org-members {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+
+  #org-members .ion-card {
+    margin-bottom: 0;
+  }
+}
+
+/* Large tablets and desktops (769px and above) */
+@media (min-width: 769px) {
+  #org-details {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  #org-members {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  #org-members .ion-card {
+    margin-bottom: 0;
+  }
+}

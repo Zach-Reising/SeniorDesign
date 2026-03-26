@@ -7,6 +7,7 @@ import {
     IonButton,
 } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
+import Header from '../components/Header';
 import { useAuthContext } from '../context/AuthContext';
 import { logout } from '../api/authApi';
 
@@ -21,18 +22,7 @@ const Dashboard: React.FC = () => {
 
     return (
         <IonPage>
-            <IonHeader>
-                <IonToolbar>
-                    <IonTitle>Dashboard</IonTitle>
-                    <IonButton
-                        slot="end"
-                        disabled={isLoading}
-                        onClick={handleLogout}
-                    >
-                        Logout
-                    </IonButton>
-                </IonToolbar>
-            </IonHeader>
+            <Header />
 
             <IonContent className="ion-padding">
                 <p>Content</p>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { IonItem, IonLabel, IonInput, IonText } from '@ionic/react';
+import { IonItem, IonInput, IonText } from '@ionic/react';
 
 interface FormInputProps {
     label: string;
@@ -23,9 +23,10 @@ const FormInput: React.FC<FormInputProps> = ({
     error = '',
 }) => {
     return (
-        <IonItem>
-            <IonLabel position={position}>{label}</IonLabel>
+        <IonItem className="cl-margin-8">
             <IonInput
+                labelPlacement={position}
+                label={label}
                 type={type}
                 value={value}
                 placeholder={placeholder}
