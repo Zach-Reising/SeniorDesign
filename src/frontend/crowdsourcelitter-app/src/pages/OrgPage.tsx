@@ -23,8 +23,11 @@ import { businessOutline, peopleOutline, calendarOutline, personOutline, mailOut
 import { Organization } from '../services/orgService';
 import { getMyOrganizations } from '../services/myOrgService';
 import './OrgPage.css';
+import { useHistory } from 'react-router';
 
 const OrgPage: React.FC = () => {
+  const history = useHistory();
+
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -66,9 +69,11 @@ const OrgPage: React.FC = () => {
     }
 
     return `${years} year${years !== 1 ? 's' : ''}`;
-  }
+  };
 
-  
+  const goToOrganization = (orgId: string) => {
+    history.push(`/organizations/${orgId}`);
+  };
 
   return (
     <IonPage>
@@ -120,7 +125,9 @@ const OrgPage: React.FC = () => {
           {!loading && !error && organizations.map((org) => (
             <IonRow key={org.id}>
               <IonCol size="12" sizeMd="6" sizeLg="4">
-                <IonCard>
+                <IonCard
+                  button
+                  onClick={() => goToOrganization(org.id)}>
                   <IonCardHeader>
                     <IonCardTitle>
                       <IonIcon icon={businessOutline} />

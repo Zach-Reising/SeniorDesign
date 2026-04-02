@@ -29,8 +29,10 @@ import { businessOutline, peopleOutline, calendarOutline, personOutline, mailOut
 import { createOrganization, getOrganizations, Organization } from '../services/orgService';
 import './OrgPage.css';
 import FormInput from '../components/FormInput';
+import { useHistory } from 'react-router';
 
 const OrgPage: React.FC = () => {
+  const history = useHistory();
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -112,6 +114,10 @@ const OrgPage: React.FC = () => {
     }
   };  
 
+  const goToOrganization = (orgId: string) => {
+    history.push(`/organizations/${orgId}`);
+  };
+
   return (
     <IonPage>
       <Header />
@@ -169,7 +175,10 @@ const OrgPage: React.FC = () => {
           {!loading && !error && organizations.map((org) => (
             <IonRow key={org.id}>
               <IonCol size="12" sizeMd="6" sizeLg="4">
-                <IonCard>
+                <IonCard
+                  button
+                  onClick={() => goToOrganization(org.id)}
+                  >
                   <IonCardHeader>
                     <IonCardTitle>
                       <IonIcon icon={businessOutline} />

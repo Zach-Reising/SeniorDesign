@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route, Redirect, RouteComponentProps } from 'react-router-dom';
 import { useAuthContext } from '../context/AuthContext';
 
 interface Props {
@@ -21,8 +21,8 @@ export const ProtectedRoute: React.FC<Props> = ({
     return (
         <Route
             {...rest}
-            render={() => 
-                isAuthenticated ? <Component /> : <Redirect to="/login" />
+            render={(routeProps: RouteComponentProps<any>) => 
+                isAuthenticated ? <Component {...routeProps} /> : <Redirect to="/login" />
             }
         />
     );

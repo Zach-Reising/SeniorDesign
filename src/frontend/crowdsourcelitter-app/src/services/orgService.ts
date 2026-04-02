@@ -19,7 +19,7 @@ export const getOrganizations = async(): Promise<Organization[]> => {
     }
 
     return data.map((org: any) => ({
-        id: org.org_id,
+        id: org.id,
         name: org.name,
         owner_email: org.owner_email,
         owner_first_name: org.owner_first_name,
@@ -59,8 +59,6 @@ export const createOrganization = async (orgName: string): Promise<void> => {
         throw insertOrgError;
     }
 
-    console.log('publicuserId:', publicUserId, typeof publicUserId);
-
     const { error: membershipError } = await supabase
         .from('org_membership')
         .insert({
@@ -70,4 +68,9 @@ export const createOrganization = async (orgName: string): Promise<void> => {
         });
 
     if (membershipError) throw membershipError;
+};
+
+export const getOrganizationById = async (organizationId: string): Promise<Organization | null> => {
+    const orgs = await getOrganizations();
+    return orgs.find((org) => org.id === organizationId) ?? null;
 };
