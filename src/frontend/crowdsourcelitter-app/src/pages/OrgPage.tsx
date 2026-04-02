@@ -1,66 +1,194 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
+  IonBadge,
   IonContent,
   IonPage,
   IonCard,
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
+  IonChip,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonIcon,
+  IonSpinner,
+  IonText
 } from '@ionic/react';
 import Header from '../components/Header';
+import { businessOutline, peopleOutline, calendarOutline, personOutline, mailOutline, shieldOutline } from 'ionicons/icons';
+import { Organization } from '../services/orgService';
+import { getMyOrganizations } from '../services/myOrgService';
 import './OrgPage.css';
+import { useHistory } from 'react-router';
 
 const OrgPage: React.FC = () => {
-  const orgDetails = {
-    name: "Street Cleanin' Bros",
-    age: "6 Years",
-    founded: "2019",
-    members: 128,
-    events: 42,
-    status: "Active",
+  const history = useHistory();
+
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadOrganizations = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const orgs = await getMyOrganizations();
+        setOrganizations(orgs);
+      } catch (err) {
+        console.error('Error loading organizations:', err);
+        setError('Unable to load organizations.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadOrganizations();
+  }, []);
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString();
   };
 
-  const members = [
-    { name: 'Alice Johnson', joined: '2023-01-14', events: 12, permissions: 'Admin' },
-    { name: 'Brian Smith', joined: '2022-11-03', events: 7, permissions: 'Member' },
-    { name: 'Carla Martinez', joined: '2024-02-19', events: 3, permissions: 'Member' },
-    { name: 'David Lee', joined: '2021-07-25', events: 21, permissions: 'Moderator' },
-    { name: 'Emily Davis', joined: '2023-08-09', events: 5, permissions: 'Member' },
-    { name: 'Frank Wilson', joined: '2020-05-17', events: 34, permissions: 'Admin' },
-    { name: 'Grace Kim', joined: '2024-06-01', events: 2, permissions: 'Member' },
-    { name: 'Henry Thompson', joined: '2022-03-30', events: 15, permissions: 'Moderator' },
-    { name: 'Isabella Clark', joined: '2023-12-11', events: 4, permissions: 'Member' },
-    { name: 'Jack Robinson', joined: '2021-09-05', events: 18, permissions: 'Member' },
-  ];
+  const getOrgAge = (createdAt: string) => {
+    const created = new Date(createdAt);
+    const now = new Date();
+
+    let years = now.getFullYear() - created.getFullYear();
+    const hasNotHadAnniversaryYet = 
+      now.getMonth() < created.getMonth() ||
+      (now.getMonth() === created.getMonth() && now.getDate() < created.getDate());
+
+    if (hasNotHadAnniversaryYet) {
+      years -= 1;
+    }
+
+    return `${years} year${years !== 1 ? 's' : ''}`;
+  };
+
+  const goToOrganization = (orgId: string) => {
+    history.push(`/organizations/${orgId}`);
+  };
 
   return (
     <IonPage>
       <Header />
-      <IonContent>
-        <section id="org-details">
-          <h1>Details</h1>
-          <p><strong>Org Name:</strong> {orgDetails.name}</p>
-          <p><strong>Org Age:</strong> {orgDetails.age}</p>
-          <p><strong>Founded:</strong> {orgDetails.founded}</p>
-          <p><strong>Total Members:</strong> {orgDetails.members}</p>
-          <p><strong>Total Events Hosted:</strong> {orgDetails.events}</p>
-          <p><strong>Status:</strong> {orgDetails.status}</p>
-        </section>
-        <section id="org-members">
-          <h1>Users</h1>
-          {members.map((member, index) => (
-            <IonCard key={index}>
-              <IonCardHeader>
-                <IonCardTitle>{member.name}</IonCardTitle>
-              </IonCardHeader>
-              <IonCardContent>
-                <p>Joined: {member.joined}</p>
-                <p>Events Attended: {member.events}</p>
-                <p>Permissions: {member.permissions}</p>
-              </IonCardContent>
-            </IonCard>
+      <IonContent fullscreen>
+        <IonGrid>
+          <IonRow>
+            <IonCol size="12">
+              <div className="page-heading">
+                <h1>My Organizations</h1>
+                <p>Browse my organizations and their member counts</p>
+              </div>
+            </IonCol>
+          </IonRow>
+
+          {loading && (
+            <IonRow className="ion-justify-content-center ion-padding-top">
+              <IonCol size="12" className="ion-text-center">
+                <IonSpinner name="crescent" />
+                <p>Loading my organizations...</p>
+              </IonCol>
+            </IonRow>
+          )}
+
+          {!loading && error && (
+            <IonRow>
+              <IonCol size="12">
+                <IonCard color="danger">
+                  <IonCardContent>
+                    <IonText color="light">{error}</IonText>
+                  </IonCardContent>
+                </IonCard>
+              </IonCol>
+            </IonRow>
+          )}
+
+          {!loading && !error && organizations.length === 0 && (
+            <IonRow>
+              <IonCol size="12">
+                <IonCard>
+                  <IonCardContent>
+                    <IonText color="medium">No organizations found.</IonText>
+                  </IonCardContent>
+                </IonCard>
+              </IonCol>
+            </IonRow>
+          )}
+
+          {!loading && !error && organizations.map((org) => (
+            <IonRow key={org.id}>
+              <IonCol size="12" sizeMd="6" sizeLg="4">
+                <IonCard
+                  button
+                  onClick={() => goToOrganization(org.id)}>
+                  <IonCardHeader>
+                    <IonCardTitle>
+                      <IonIcon icon={businessOutline} />
+                      <span>{org.name}</span>
+                    </IonCardTitle>
+                  </IonCardHeader>
+
+                  <IonCardContent>
+                    <div>
+                      <IonChip color="primary">
+                        <IonIcon icon={peopleOutline} />
+                        <IonLabel>{org.memberCount} member{org.memberCount !== 1 ? 's' : ''}</IonLabel>
+                      </IonChip>
+
+                      <IonChip color="success">
+                        <IonLabel>Active</IonLabel>
+                      </IonChip>
+                    </div>
+
+                    <IonList lines="none">
+                      <IonItem>
+                        <IonIcon icon={personOutline} slot="start" />
+                        <IonLabel>
+                          <h2>Owner</h2>
+                          <p>{(org.owner_first_name && org.owner_last_name) ? `${org.owner_first_name} ${org.owner_last_name}` : org.owner_email}</p>
+                        </IonLabel>
+                      </IonItem>
+
+                      <IonItem>
+                        <IonIcon icon={calendarOutline} slot="start" />
+                        <IonLabel>
+                          <h2>Created</h2>
+                          <p>{formatDate(org.created_at)}</p>
+                        </IonLabel>
+                      </IonItem>
+
+                      <IonItem>
+                        <IonIcon icon={calendarOutline} slot="start" />
+                        <IonLabel>
+                          <h2>Age</h2>
+                          <p>{getOrgAge(org.created_at)}</p>
+                        </IonLabel>
+                      </IonItem>
+
+                      <IonItem>
+                        <IonIcon icon={peopleOutline} slot="start" />
+                        <IonLabel>
+                          <h2>Total Members</h2>
+                          <p>{org.memberCount}</p>
+                        </IonLabel>
+                        <IonBadge slot="end" color="primary">
+                          {org.memberCount}
+                        </IonBadge>
+                      </IonItem>
+                    </IonList>
+                  </IonCardContent>
+                </IonCard>
+              </IonCol>
+            </IonRow>
           ))}
-        </section>
+        </IonGrid>
       </IonContent>
     </IonPage>
   );

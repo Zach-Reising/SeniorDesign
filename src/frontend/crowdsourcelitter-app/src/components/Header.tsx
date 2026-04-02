@@ -33,9 +33,12 @@ const Header: React.FC = () => {
               <Link to="/login">Log in</Link>
             </>
             ) : (
-              <button type="button" className="header-nav-link header-nav-button" onClick={handleLogout}>
-                Logout
-              </button>
+              <>
+                <Link to="/profile">Profile</Link>
+                <button type="button" className="header-nav-link header-nav-button" onClick={handleLogout}>
+                  Logout
+                </button>
+              </>
             )}
           </nav>
         </div>
