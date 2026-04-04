@@ -39,7 +39,7 @@ const LoginPage: React.FC = () => {
   
       useEffect(() => {
           if (!isLoading && isAuthenticated) {
-              history.replace('/dashboard');
+              history.replace('/map');
           }
       }, [isLoading, isAuthenticated, history]);
   
@@ -51,7 +51,7 @@ const LoginPage: React.FC = () => {
           try {
               await login(email, password);
   
-              history.replace('/dashboard');
+              history.replace('/map');
           } catch (err: any) {
               setError(err.message || 'Login Failed');
           } finally {

@@ -24,6 +24,7 @@ export type CreateReportInput = {
   reportType: ReportType
   lat: number
   lng: number
+  imageFile?: File | null
 }
 
 export async function getReports(): Promise<Report[]> {
@@ -36,6 +37,35 @@ export async function getReports(): Promise<Report[]> {
   return (data ?? []) as Report[]
 }
 
+async function getSeverityFromImageOrFallback(
+  imageFile: File | null | undefined,
+  fallbackSeverity: number
+): Promise<number> {
+  if (!imageFile) {
+    return Number(fallbackSeverity)
+  }
+  // Remove this line when API is set up
+  console.log('Image submitted with report')
+  // Future API integration goes here.
+  // Example:
+  //
+  // const formData = new FormData()
+  // formData.append('image', imageFile)
+  //
+  // const response = await fetch('/api/analyze-report-image', {
+  //   method: 'POST',
+  //   body: formData,
+  // })
+  //
+  // if (!response.ok) {
+  //   throw new Error('Failed to analyze image.')
+  // }
+  //
+  // const result = await response.json()
+  // return Number(result.severity)
+  return Number(fallbackSeverity)
+}
+
 export async function createReport({
   name,
   severity,
@@ -43,34 +73,39 @@ export async function createReport({
   reportType,
   lat,
   lng,
+  imageFile,
 }: CreateReportInput): Promise<Report> {
   if (!name?.trim()) throw new Error('Report name is required.')
   if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
     throw new Error('A valid map location is required.')
   }
 
+  const finalSeverity = await getSeverityFromImageOrFallback(
+    imageFile,
+    severity
+  )
+
   const {
-    data: { user },
+    data: publicUserId,
     error: authError,
-  } = await supabase.auth.getUser()
+  } = await supabase.rpc('get_user_id_from_auth');
 
-  if (authError) throw authError
-  if (!user) throw new Error('You must be signed in to create a report.')
+  if (authError) throw authError;
 
-  const point = `SRID=4326;POINT(${lng} ${lat})`
+  const point = `SRID=4326;POINT(${lng} ${lat})`;
 
   const { data: inserted, error: insertError } = await supabase
     .from('reports')
     .insert({
       name: name.trim(),
-      severity: Number(severity),
+      severity: Number(finalSeverity),
       description: description?.trim() ?? '',
       report_type: reportType ?? 'litter',
-      reported_by: user.id,
+      reported_by: publicUserId,
       location: point,
     })
     .select('report_id')
-    .single<{ report_id: string }>()
+    .single<{ report_id: string }>();
 
   if (insertError) throw insertError
   if (!inserted) throw new Error('Report insert did not return a report ID.')

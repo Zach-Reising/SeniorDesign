@@ -1,4 +1,5 @@
-import type { Dispatch, SetStateAction } from 'react'
+import type { Dispatch, SetStateAction, ChangeEvent } from 'react'
+import { useRef } from 'react';
 import type { LatLng } from 'leaflet'
 import {
   IonButton,
@@ -15,12 +16,15 @@ import {
   IonText,
   IonIcon,
 } from '@ionic/react'
+import { imageOutline } from 'ionicons/icons';
 
 export type ReportForm = {
   name: string
   description: string
   severity: number
   reportType: 'litter' | 'hazmat' | 'bulk_item'
+  imageFile: File | null
+  imagePreview: string
 }
 
 type ReportComposerProps = {
@@ -46,7 +50,34 @@ export default function ReportComposer({
   onCancel,
   onSubmit,
 }: ReportComposerProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   if (!open) return null
+
+  const handleChooseImage = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] ?? null;
+
+    setForm((prev) => ({
+      ...prev,
+      imageFile: file,
+      imagePreview: file ? URL.createObjectURL(file) : '',
+    }))
+  }
+
+  const handleRemoveImage = () => {
+    setForm((prev) => ({
+      ...prev,
+      imageFile: null,
+      imagePreview: '',
+    }))
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
 
   return (
     <div className="report-composer-overlay">
@@ -96,6 +127,28 @@ export default function ReportComposer({
               <IonSelectOption value={4}>4</IonSelectOption>
               <IonSelectOption value={5}>5</IonSelectOption>
             </IonSelect>
+          </IonItem>
+
+          <IonItem lines="none">
+            <IonLabel position="stacked">Litter Image if Applicable</IonLabel>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              hidden
+            />
+            <IonButton className="cl-margin-top-8" expand="block" fill="outline" onClick={handleChooseImage} disabled={submitting}>
+              <IonIcon icon={imageOutline} slot="start" />
+              {form.imageFile ? 'Change Photo' : 'Choose Photo'}
+            </IonButton>
+            {form.imageFile && (
+              <div className="cl-margin-top-8">
+                <IonText color="medium">
+                  <p className="cl-margin-0">{form.imageFile.name}</p>
+                </IonText>
+              </div>
+            )}
           </IonItem>
 
           <IonItem>

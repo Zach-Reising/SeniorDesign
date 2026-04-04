@@ -26,7 +26,6 @@ const Header: React.FC = () => {
             <Link to="/map">Map</Link>
             <Link to="/browse-orgs">Orgs</Link>
             <Link to="/org">My Org</Link>
-            <Link to="/browse-locations">Browse</Link>
 
             {!isAuthenticated ? (
             <>
