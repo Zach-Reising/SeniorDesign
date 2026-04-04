@@ -1,0 +1,75 @@
+.map-page {
+  height: 100%;
+}
+
+.map-page-content {
+  --padding-top: 0;
+  --padding-bottom: 88px;
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+.map-page-content::part(scroll) {
+  height: 100%;
+}
+
+.map-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.leaflet-map {
+  width: 100%;
+  height: 100%;
+}
+
+.map-shell .leaflet-container {
+  width: 100%;
+  height: 100%;
+}
+
+.report-composer-overlay {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 84px;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.report-composer-card {
+  pointer-events: auto;
+  max-height: 50vh;
+  overflow: auto;
+}
+
+.map-add-button {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  width: 72px;
+  height: 72px;
+  border: none;
+  border-radius: 9999px;
+  background: var(--ion-color-primary, #388e6c);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+  z-index: 1200;
+  cursor: pointer;
+}
+
+.map-add-button ion-icon {
+  font-size: 36px;
+}
+
+.map-add-button:hover {
+  filter: brightness(0.96);
+}
+
+.map-add-button:active {
+  transform: scale(0.97);
+}

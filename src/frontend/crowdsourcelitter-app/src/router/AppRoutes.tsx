@@ -10,6 +10,7 @@ import MyOrg from '../pages/OrgPage';
 import BrowseLocations from '../pages/BrowseLocationsPage';
 import ProfilePage from '../pages/ProfilePage';
 import OrganizationDetailPage from '../pages/OrganizationDetailPage';
+import Map from '../pages/Map';
 
 export const AppRoutes: React.FC = () => {
     return (
@@ -20,6 +21,7 @@ export const AppRoutes: React.FC = () => {
 
             <Route exact path="/home" component={Home} />
             
+            <Route exact path="/map" component={Map} />
 
             <ProtectedRoute exact path="/dashboard" component={Dashboard} />
             <ProtectedRoute exact path="/browse-orgs" component={Orgs} />
