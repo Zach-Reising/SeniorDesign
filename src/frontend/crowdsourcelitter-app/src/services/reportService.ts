@@ -15,6 +15,11 @@ export type Report = {
   reported_by: string
   latitude: number
   longitude: number
+  avg_trash_coverage?: number | null
+  avg_trash_instances?: number | null
+  scored_image_count?: number | null
+  trash_coverage_rank?: number | null
+  trash_instances_rank?: number | null
 }
 
 export type CreateReportInput = {
