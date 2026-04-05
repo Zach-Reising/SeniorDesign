@@ -1,0 +1,2 @@
+*.pt
+!yolo_trash_seg.pt

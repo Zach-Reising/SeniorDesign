@@ -1,0 +1,11 @@
+tqdm
+torch==2.11.0+rocm7.2
+torchvision==0.26.0+rocm7.2
+matplotlib
+numpy
+Pillow
+kagglehub
+ultralytics
+pandas
+seaborn
+supabase
