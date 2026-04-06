@@ -27,6 +27,8 @@ export type CreateReportInput = {
   imageFile?: File | null
 }
 
+const REPORT_IMAGES_BUCKET = 'report-images';
+
 export async function getReports(): Promise<Report[]> {
   const { data, error } = await supabase
     .from('reports_view')
@@ -37,34 +39,52 @@ export async function getReports(): Promise<Report[]> {
   return (data ?? []) as Report[]
 }
 
-async function getSeverityFromImageOrFallback(
-  imageFile: File | null | undefined,
-  fallbackSeverity: number
-): Promise<number> {
-  if (!imageFile) {
-    return Number(fallbackSeverity)
-  }
-  // Remove this line when API is set up
-  console.log('Image submitted with report')
-  // Future API integration goes here.
-  // Example:
-  //
-  // const formData = new FormData()
-  // formData.append('image', imageFile)
-  //
-  // const response = await fetch('/api/analyze-report-image', {
-  //   method: 'POST',
-  //   body: formData,
-  // })
-  //
-  // if (!response.ok) {
-  //   throw new Error('Failed to analyze image.')
-  // }
-  //
-  // const result = await response.json()
-  // return Number(result.severity)
-  return Number(fallbackSeverity)
+async function uploadReportImage(
+  reportId: string,
+  uploadedBy: string,
+  imageFile: File
+): Promise<void> {
+  if (!imageFile) return;
+
+  const fileExt = imageFile.name.split('.').pop() || 'jpg';
+  const fileName = `${crypto.randomUUID()}.${fileExt}`;
+  const storagePath = `${uploadedBy}/${reportId}/${fileName}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from(REPORT_IMAGES_BUCKET)
+    .upload(storagePath, imageFile, {
+      cacheControl: '3600',
+      upsert: false,
+      contentType: imageFile.type || undefined,
+    });
+
+  if (uploadError) throw uploadError;
+
+  const { data: publicUrlData} = await supabase.storage
+    .from(REPORT_IMAGES_BUCKET)
+    .getPublicUrl(storagePath);
+
+  const publicUrl = publicUrlData.publicUrl;
+
+  const { error: imageInsertError } = await supabase
+    .from('images')
+    .insert({
+      report_id: reportId,
+      uploaded_by: uploadedBy,
+      bucket_name: REPORT_IMAGES_BUCKET,
+      storage_path: storagePath,
+      public_url: publicUrl,
+      mime_type: imageFile.type || null,
+      file_size_bytes: imageFile.size,
+      is_primary: true
+    })
+
+    if (imageInsertError) {
+      await supabase.storage.from(REPORT_IMAGES_BUCKET).remove([storagePath]);
+      throw imageInsertError;
+    }
 }
+
 
 export async function createReport({
   name,
@@ -80,10 +100,6 @@ export async function createReport({
     throw new Error('A valid map location is required.')
   }
 
-  const finalSeverity = await getSeverityFromImageOrFallback(
-    imageFile,
-    severity
-  )
 
   const {
     data: publicUserId,
@@ -98,7 +114,7 @@ export async function createReport({
     .from('reports')
     .insert({
       name: name.trim(),
-      severity: Number(finalSeverity),
+      severity: Number(severity),
       description: description?.trim() ?? '',
       report_type: reportType ?? 'litter',
       reported_by: publicUserId,
@@ -109,6 +125,10 @@ export async function createReport({
 
   if (insertError) throw insertError
   if (!inserted) throw new Error('Report insert did not return a report ID.')
+
+  if (imageFile) {
+    await uploadReportImage(inserted.report_id, publicUserId, imageFile);
+  }
 
   const { data: report, error: readError } = await supabase
     .from('reports_view')
