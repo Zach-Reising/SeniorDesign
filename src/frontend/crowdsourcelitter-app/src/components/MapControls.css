@@ -1,0 +1,29 @@
+.map-add-button {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  width: 72px;
+  height: 72px;
+  border: none;
+  border-radius: 9999px;
+  background: var(--ion-color-primary, #388e6c);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+  z-index: 1200;
+  cursor: pointer;
+}
+
+.map-add-button ion-icon {
+  font-size: 36px;
+}
+
+.map-add-button:hover {
+  filter: brightness(0.96);
+}
+
+.map-add-button:active {
+  transform: scale(0.97);
+}
