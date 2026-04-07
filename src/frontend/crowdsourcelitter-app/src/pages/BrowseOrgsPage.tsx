@@ -172,73 +172,76 @@ const OrgPage: React.FC = () => {
             </IonRow>
           )}
 
-          {!loading && !error && organizations.map((org) => (
-            <IonRow key={org.id}>
-              <IonCol size="12" sizeMd="6" sizeLg="4">
-                <IonCard
-                  button
-                  onClick={() => goToOrganization(org.id)}
-                  >
-                  <IonCardHeader>
-                    <IonCardTitle>
-                      <IonIcon icon={businessOutline} style={{ marginRight: 8 }} />
-                      <span>{org.name}</span>
-                    </IonCardTitle>
-                  </IonCardHeader>
+          {!loading && !error && (
+            <IonRow>
+              {organizations.map((org) => (
+                <IonCol key={org.id} size="12" sizeSm="6" sizeLg="4" sizeXl="3">
+                  <IonCard button onClick={() => goToOrganization(org.id)}>
+                    <IonCardHeader>
+                      <IonCardTitle>
+                        <IonIcon icon={businessOutline} style={{ marginRight: 8 }} />
+                        <span>{org.name}</span>
+                      </IonCardTitle>
+                    </IonCardHeader>
 
-                  <IonCardContent>
-                    <div>
-                      <IonChip color="primary">
-                        <IonIcon icon={peopleOutline} />
-                        <IonLabel>{org.memberCount} member{org.memberCount !== 1 ? 's' : ''}</IonLabel>
-                      </IonChip>
+                    <IonCardContent>
+                      <div>
+                        <IonChip color="primary">
+                          <IonIcon icon={peopleOutline} />
+                          <IonLabel>{org.memberCount} member{org.memberCount !== 1 ? 's' : ''}</IonLabel>
+                        </IonChip>
+                        <IonChip color="success">
+                          <IonLabel>Active</IonLabel>
+                        </IonChip>
+                      </div>
 
-                      <IonChip color="success">
-                        <IonLabel>Active</IonLabel>
-                      </IonChip>
-                    </div>
+                      <IonList lines="none">
+                        <IonItem>
+                          <IonIcon icon={personOutline} slot="start" />
+                          <IonLabel>
+                            <h2>Owner</h2>
+                            <p>
+                              {(org.owner_first_name && org.owner_last_name)
+                                ? `${org.owner_first_name} ${org.owner_last_name}`
+                                : org.owner_email}
+                            </p>
+                          </IonLabel>
+                        </IonItem>
 
-                    <IonList lines="none">
-                      <IonItem>
-                        <IonIcon icon={personOutline} slot="start" />
-                        <IonLabel>
-                          <h2>Owner</h2>
-                          <p>{(org.owner_first_name && org.owner_last_name) ? `${org.owner_first_name} ${org.owner_last_name}` : org.owner_email}</p>
-                        </IonLabel>
-                      </IonItem>
+                        <IonItem>
+                          <IonIcon icon={calendarOutline} slot="start" />
+                          <IonLabel>
+                            <h2>Created</h2>
+                            <p>{formatDate(org.created_at)}</p>
+                          </IonLabel>
+                        </IonItem>
 
-                      <IonItem>
-                        <IonIcon icon={calendarOutline} slot="start" />
-                        <IonLabel>
-                          <h2>Created</h2>
-                          <p>{formatDate(org.created_at)}</p>
-                        </IonLabel>
-                      </IonItem>
+                        <IonItem>
+                          <IonIcon icon={calendarOutline} slot="start" />
+                          <IonLabel>
+                            <h2>Age</h2>
+                            <p>{getOrgAge(org.created_at)}</p>
+                          </IonLabel>
+                        </IonItem>
 
-                      <IonItem>
-                        <IonIcon icon={calendarOutline} slot="start" />
-                        <IonLabel>
-                          <h2>Age</h2>
-                          <p>{getOrgAge(org.created_at)}</p>
-                        </IonLabel>
-                      </IonItem>
-
-                      <IonItem>
-                        <IonIcon icon={peopleOutline} slot="start" />
-                        <IonLabel>
-                          <h2>Total Members</h2>
-                          <p>{org.memberCount}</p>
-                        </IonLabel>
-                        <IonBadge slot="end" color="primary">
-                          {org.memberCount}
-                        </IonBadge>
-                      </IonItem>
-                    </IonList>
-                  </IonCardContent>
-                </IonCard>
-              </IonCol>
+                        <IonItem>
+                          <IonIcon icon={peopleOutline} slot="start" />
+                          <IonLabel>
+                            <h2>Total Members</h2>
+                            <p>{org.memberCount}</p>
+                          </IonLabel>
+                          <IonBadge slot="end" color="primary">
+                            {org.memberCount}
+                          </IonBadge>
+                        </IonItem>
+                      </IonList>
+                    </IonCardContent>
+                  </IonCard>
+                </IonCol>
+              ))}
             </IonRow>
-          ))}
+          )}
+
         </IonGrid>
 
         <IonModal isOpen={showCreateModal} onDidDismiss={() => setShowCreateModal(false)}>
