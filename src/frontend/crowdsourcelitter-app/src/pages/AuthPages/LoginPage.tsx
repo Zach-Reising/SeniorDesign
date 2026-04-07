@@ -145,9 +145,6 @@ const LoginPage: React.FC = () => {
                 </IonCard>
 
                 <IonCard className='cl-margin-24'>
-                  <IonCardHeader>
-                    <IonCardTitle>Or</IonCardTitle>
-                  </IonCardHeader>
                   <IonCardContent>
                     <IonButton expand="block" className="google cl-margin-12" onClick={() => handleOAuthLogin('google')} disabled>
                       <IonIcon icon={logoGoogle} />

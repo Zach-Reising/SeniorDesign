@@ -162,9 +162,6 @@ const SignupPage: React.FC = () => {
               </IonCard>
 
               <IonCard className="cl-margin-24">
-                <IonCardHeader>
-                  <IonCardTitle>Or</IonCardTitle>
-                </IonCardHeader>
                 <IonCardContent>
                   <IonButton expand="block" className="google cl-margin-12" onClick={() => handleOAuthSignup('google')} disabled>
                     <IonIcon icon={logoGoogle} />
