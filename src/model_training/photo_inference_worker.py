@@ -3,10 +3,13 @@ from __future__ import annotations
 import argparse
 import base64
 import importlib
+import math
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from urllib.error import URLError
+from urllib.request import urlopen
 
 import cv2
 import numpy as np
@@ -19,6 +22,9 @@ DEFAULT_MODEL_PATH = Path(
 IMAGE_ID_COLUMNS = ("i_id", "image_id", "id")
 REPORT_ID_COLUMNS = ("report_id", "r_id")
 IMAGE_BYTES_COLUMNS = ("img", "image", "image_bytes")
+IMAGE_URL_COLUMNS = ("public_url", "image_url", "url")
+STORAGE_PATH_COLUMNS = ("storage_path", "path")
+BUCKET_COLUMNS = ("bucket_name", "bucket")
 
 
 def parse_args() -> argparse.Namespace:
@@ -74,6 +80,10 @@ def decode_image(image_bytes: bytes) -> np.ndarray:
     return image
 
 
+def clamp(value: float, minimum: float, maximum: float) -> float:
+    return max(minimum, min(maximum, value))
+
+
 def compute_metrics(result: Any) -> tuple[float, int]:
     if result.masks is not None and result.masks.data is not None and result.masks.data.shape[0] > 0:
         masks = result.masks.data.detach().cpu().numpy() > 0.5
@@ -89,10 +99,15 @@ def compute_metrics(result: Any) -> tuple[float, int]:
     return 0.0, box_count
 
 
-def dense_rank_desc(values_by_id: dict[str, float]) -> dict[str, int]:
-    unique_vals = sorted(set(values_by_id.values()), reverse=True)
-    rank_for_value = {value: idx + 1 for idx, value in enumerate(unique_vals)}
-    return {row_id: rank_for_value[value] for row_id, value in values_by_id.items()}
+def compute_image_composite_score(coverage: float, instances: int) -> float:
+    normalized_coverage = clamp(float(coverage), 0.0, 1.0)
+    normalized_instances = float(max(instances, 0)) / float(max(instances, 0) + 3)
+    return clamp((normalized_coverage * 0.75) + (normalized_instances * 0.25), 0.0, 1.0)
+
+
+def composite_score_to_severity(score: float) -> int:
+    normalized_score = clamp(float(score), 0.0, 1.0)
+    return int(clamp(math.floor(1 + (4 * normalized_score) + 0.5), 1, 5))
 
 
 class PhotoInferenceWorker:
@@ -143,7 +158,7 @@ class PhotoInferenceWorker:
         report_id_key = first_present_key(row, REPORT_ID_COLUMNS)
         image_bytes_key = first_present_key(row, IMAGE_BYTES_COLUMNS)
 
-        if image_id_key is None or report_id_key is None or image_bytes_key is None:
+        if image_id_key is None or report_id_key is None:
             print("Skipping row due to missing expected columns.")
             return
 
@@ -154,7 +169,7 @@ class PhotoInferenceWorker:
             return
 
         try:
-            image_bytes = parse_db_image(row[image_bytes_key])
+            image_bytes = self.get_image_bytes(row, image_bytes_key)
             image = decode_image(image_bytes)
             results = self.model.predict(
                 source=image,
@@ -209,6 +224,47 @@ class PhotoInferenceWorker:
         )
         return bool(resp.data)
 
+    def get_image_bytes(self, row: dict[str, Any], image_bytes_key: str | None) -> bytes:
+        if image_bytes_key is not None and row.get(image_bytes_key) is not None:
+            return parse_db_image(row[image_bytes_key])
+
+        image_url_key = first_present_key(row, IMAGE_URL_COLUMNS)
+        if image_url_key is not None and row.get(image_url_key):
+            return self.download_bytes_from_url(str(row[image_url_key]))
+
+        storage_path_key = first_present_key(row, STORAGE_PATH_COLUMNS)
+        bucket_key = first_present_key(row, BUCKET_COLUMNS)
+        if storage_path_key is not None and bucket_key is not None:
+            storage_path = row.get(storage_path_key)
+            bucket_name = row.get(bucket_key)
+            if storage_path and bucket_name:
+                return self.download_bytes_from_storage(str(bucket_name), str(storage_path))
+
+        raise ValueError("Image row does not include supported image data columns.")
+
+    def download_bytes_from_url(self, url: str) -> bytes:
+        try:
+            with urlopen(url, timeout=30) as response:
+                data = response.read()
+                if not data:
+                    raise ValueError("Downloaded image is empty.")
+                return data
+        except URLError as exc:
+            raise ValueError(f"Failed to download image from URL: {exc}") from exc
+
+    def download_bytes_from_storage(self, bucket_name: str, storage_path: str) -> bytes:
+        try:
+            storage_api = self.client.storage.from_(bucket_name)
+            data = storage_api.download(storage_path)
+        except Exception as exc:
+            raise ValueError(
+                f"Failed to download image from storage bucket={bucket_name} path={storage_path}: {exc}"
+            ) from exc
+
+        if not data:
+            raise ValueError("Downloaded image from storage is empty.")
+        return data
+
     def refresh_report_scores(self, report_id_key: str, report_id: Any) -> None:
         scored_rows_resp = (
             self.client.table(self.args.table)
@@ -225,13 +281,30 @@ class PhotoInferenceWorker:
             avg_coverage = float(sum(coverages) / len(coverages)) if coverages else None
             avg_instances = float(sum(instances) / len(instances)) if instances else None
             scored_count = len(scored_rows)
+            composite_values = [
+                compute_image_composite_score(
+                    float(r.get("trash_coverage") or 0.0),
+                    int(float(r.get("trash_instances") or 0.0)),
+                )
+                for r in scored_rows
+            ]
+            composite_score = float(sum(composite_values) / len(composite_values)) if composite_values else 0.0
+            severity = composite_score_to_severity(composite_score)
         else:
             avg_coverage = None
             avg_instances = None
             scored_count = 0
+            composite_score = None
+            severity = None
 
-        self.update_report_aggregate(report_id, avg_coverage, avg_instances, scored_count)
-        self.refresh_report_ranks()
+        self.update_report_aggregate(
+            report_id=report_id,
+            avg_coverage=avg_coverage,
+            avg_instances=avg_instances,
+            scored_count=scored_count,
+            composite_score=composite_score,
+            severity=severity,
+        )
 
     def update_report_aggregate(
         self,
@@ -239,11 +312,16 @@ class PhotoInferenceWorker:
         avg_coverage: float | None,
         avg_instances: float | None,
         scored_count: int,
+        composite_score: float | None,
+        severity: int | None,
     ) -> None:
         payload = {
             "avg_trash_coverage": avg_coverage,
             "avg_trash_instances": avg_instances,
             "scored_image_count": scored_count,
+            "composite_trash_score": composite_score,
+            "severity": severity,
+            "severity_updated_at": utc_now_iso(),
             "trash_updated_at": utc_now_iso(),
         }
 
@@ -263,56 +341,6 @@ class PhotoInferenceWorker:
             .eq("r_id", report_id)
             .execute()
         )
-
-    def refresh_report_ranks(self) -> None:
-        report_rows, report_id_key = self.fetch_rank_source_rows()
-        if not report_rows:
-            return
-
-        coverage_values: dict[str, float] = {}
-        instance_values: dict[str, float] = {}
-
-        for row in report_rows:
-            row_id = str(row[report_id_key])
-            if row.get("avg_trash_coverage") is not None:
-                coverage_values[row_id] = float(row["avg_trash_coverage"])
-            if row.get("avg_trash_instances") is not None:
-                instance_values[row_id] = float(row["avg_trash_instances"])
-
-        coverage_ranks = dense_rank_desc(coverage_values) if coverage_values else {}
-        instance_ranks = dense_rank_desc(instance_values) if instance_values else {}
-
-        for row in report_rows:
-            row_id = str(row[report_id_key])
-            (
-                self.client.table(self.args.report_table)
-                .update(
-                    {
-                        "trash_coverage_rank": coverage_ranks.get(row_id),
-                        "trash_instances_rank": instance_ranks.get(row_id),
-                    }
-                )
-                .eq(report_id_key, row[report_id_key])
-                .execute()
-            )
-
-    def fetch_rank_source_rows(self) -> tuple[list[dict[str, Any]], str]:
-        try:
-            primary_resp = (
-                self.client.table(self.args.report_table)
-                .select("report_id,avg_trash_coverage,avg_trash_instances,scored_image_count")
-                .gt("scored_image_count", 0)
-                .execute()
-            )
-            return list(primary_resp.data or []), "report_id"
-        except Exception:
-            fallback_resp = (
-                self.client.table(self.args.report_table)
-                .select("r_id,avg_trash_coverage,avg_trash_instances,scored_image_count")
-                .gt("scored_image_count", 0)
-                .execute()
-            )
-            return list(fallback_resp.data or []), "r_id"
 
 
 def main() -> None:
