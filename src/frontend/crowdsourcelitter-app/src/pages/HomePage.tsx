@@ -59,7 +59,7 @@ const HomePage: React.FC = () => {
             <p>Pin spots on the map, track cleanup events, and connect with others who care.</p>
             <div className="hp-buttons">
               <button className="hp-btn-primary" onClick={() => history.push('/map')}>Open the map</button>
-              <button className="hp-btn-secondary" onClick={() => document.getElementById('hp-how')?.scrollIntoView({ behavior: 'smooth' })}>
+              <button className="hp-btn-secondary" onClick={() => document.getElementById("features")?.scrollIntoView({ behavior: 'smooth' })}>
                 Learn how it works
               </button>
             </div>
