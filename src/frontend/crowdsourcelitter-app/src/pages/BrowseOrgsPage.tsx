@@ -131,7 +131,7 @@ const OrgPage: React.FC = () => {
               </div>
             </IonCol>
 
-            <IonCol size="12" sizeMd="8" className="ion-text-md-end">
+            <IonCol size="12" sizeMd="8">
               <IonButton onClick={() => setShowCreateModal(true)}>
                 <IonIcon icon={addOutline} slot="start" />
                 Create Organization
@@ -181,7 +181,7 @@ const OrgPage: React.FC = () => {
                   >
                   <IonCardHeader>
                     <IonCardTitle>
-                      <IonIcon icon={businessOutline} />
+                      <IonIcon icon={businessOutline} style={{ marginRight: 8 }} />
                       <span>{org.name}</span>
                     </IonCardTitle>
                   </IonCardHeader>

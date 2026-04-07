@@ -574,7 +574,7 @@ const OrganizationDetailPage: React.FC<Props> = ({ match }) => {
                   <IonCardHeader>
                     <IonCardTitle>
                       <IonIcon icon={businessOutline} style={{ marginRight: 8 }} />
-                      Organization Info
+                      <span>Organization Info</span>
                     </IonCardTitle>
                   </IonCardHeader>
 
