@@ -1,0 +1,11 @@
+tqdm
+torch
+torchvision
+matplotlib
+numpy
+Pillow
+kagglehub
+ultralytics
+pandas
+seaborn
+supabase
