@@ -120,10 +120,16 @@
   background: #81C784;
 }
 
-/* Mobile */
-@media (max-width: 640px) {
+@media (max-width: 860px) {
   .hdr-logo-name { display: none; }
-  .hdr-link      { font-size: 13px; padding: 6px 8px; }
+}
+
+@media (max-width: 640px) {
+  .hdr-inner        { padding: 0 10px; gap: 0; }
+  .hdr-logo         { margin-right: 8px; }
+  .hdr-links        { gap: 0; }
+  .hdr-link         { font-size: 12px; padding: 6px 6px; }
+  .hdr-divider      { margin: 0 4px; }
   .hdr-btn-ghost,
-  .hdr-btn-solid { padding: 6px 10px; font-size: 13px; }
+  .hdr-btn-solid    { font-size: 12px; padding: 6px 8px; }
 }

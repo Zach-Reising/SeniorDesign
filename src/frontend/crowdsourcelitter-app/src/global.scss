@@ -19,3 +19,28 @@
 /* @import '@ionic/react/css/palettes/dark.always.css'; */
 /* @import '@ionic/react/css/palettes/dark.class.css'; */
 @import '@ionic/react/css/palettes/dark.system.css';
+
+
+:root {
+  --ion-font-family: 'Nunito', sans-serif;
+}
+
+html,
+body,
+ion-app,
+ion-content,
+ion-title,
+ion-label,
+ion-button,
+ion-input,
+ion-textarea,
+ion-card,
+ion-card-title,
+ion-card-content,
+ion-toolbar,
+ion-tab-button,
+ion-item,
+ion-list,
+ion-modal {
+  font-family: var(--ion-font-family);
+}

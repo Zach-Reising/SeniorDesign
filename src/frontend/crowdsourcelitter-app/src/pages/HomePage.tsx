@@ -25,11 +25,7 @@ const HomePage: React.FC = () => {
   }, []);
 
   const scrollToSection = async (index: number) => {
-    const scrollEl = await contentRef.current?.getScrollElement();
-    if (!scrollEl) return;
-
-    const sectionHeight = scrollEl.clientHeight;
-    contentRef.current?.scrollToPoint(0, index * sectionHeight, 400);
+    document.getElementById(SECTIONS[index])?.scrollIntoView({ behavior: 'smooth' });    
   };
 
   return (
@@ -55,7 +51,7 @@ const HomePage: React.FC = () => {
         onIonScroll={handleScroll}  
       >
 
-        <section className="hp-hero">
+        <section className="hp-hero" id="hero">
           <div className="hp-dot-grid" />
           <div className="hp-hero-inner">
             <span className="hp-badge">Crowd Source Litter Pickup</span>
@@ -63,22 +59,22 @@ const HomePage: React.FC = () => {
             <p>Pin spots on the map, track cleanup events, and connect with others who care.</p>
             <div className="hp-buttons">
               <button className="hp-btn-primary" onClick={() => history.push('/map')}>Open the map</button>
-              <button className="hp-btn-secondary" onClick={() => document.getElementById('hp-how')?.scrollIntoView({ behavior: 'smooth' })}>
+              <button className="hp-btn-secondary" onClick={() => document.getElementById("features")?.scrollIntoView({ behavior: 'smooth' })}>
                 Learn how it works
               </button>
             </div>
           </div>
         </section>
 
-        <section className="hp-features-section">
+        <section className="hp-features-section" id="features">
           <div className="hp-features-inner">
             <p className="hp-section-label">Why it works</p>
             <h2 className="hp-section-title">Simple, effective, and community-driven</h2>
             <div className="hp-cards">
               {[
                 { icon: locationOutline,     title: 'Pin it on the map',        body: 'Use the GPS on your device or tap a location on the map to report an area. Add photos and a description to let others know about it.' },
-                { icon: peopleOutline,     title: 'Join organizations',       body: 'Join an organization or create your own to collaborate with others in your area. participate in events to help make a difference.' },
-                { icon: statsChartOutline, title: 'Measure real impact',      body: 'Every report you file moves the needle. Live stats show collective progress.' },
+                { icon: peopleOutline,     title: 'Join an organization',       body: 'Join or create an organization to connect with others in your area.' },
+                { icon: statsChartOutline, title: 'Make an impact',             body: 'Participate in  events and contribute to making a difference in your community.' },
               ].map(c => (
                 <div className="hp-card" key={c.title}>
                   <div className = 'hp-card-icon'>
@@ -92,13 +88,13 @@ const HomePage: React.FC = () => {
           </div>
         </section>
 
-        <section className="hp-steps-section" id="hp-how">
+        <section className="hp-steps-section" id="steps">
           <div className="hp-steps-inner">
             <p className="hp-section-label">Getting started</p>
-            <h2 className="hp-section-title">Three steps to make a difference</h2>
+            <h2 className="hp-section-title">Three steps to making a difference</h2>
             <div className="hp-steps-grid">
               {[
-                { n: '1', title: 'Create an account',   body: 'Sign up in under a minute with your email or social login.' },
+                { n: '1', title: 'Create an account',   body: 'Sign up in under a minute with your email.' },
                 { n: '2', title: 'Find a litter spot',  body: 'Browse the map or use your GPS to report something you spotted nearby.' },
                 { n: '3', title: 'Submit your report',  body: 'Add a photo and details. Your pin goes live instantly for others to see.' },
               ].map(s => (
@@ -112,9 +108,9 @@ const HomePage: React.FC = () => {
           </div>
         </section>
 
-        <section className="hp-cta-section">
+        <section className="hp-cta-section" id="cta">
           <div className="hp-cta-inner">
-            <h2>Ready to make your neighborhood cleaner?</h2>
+            <h2>Ready to make your community cleaner?</h2>
             <p>Join thousands of others already mapping litter and driving real change.</p>
             <button className="hp-btn-primary hp-btn-lg" onClick={() => history.push('/map')}>
               Get started

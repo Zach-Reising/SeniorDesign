@@ -1,27 +1,26 @@
 import { useEffect, useState } from 'react'
 import {
   IonContent,
-  IonFab,
-  IonFabButton,
   IonHeader,
+  IonIcon,
   IonPage,
   IonTitle,
   IonToolbar,
-  IonIcon,
 } from '@ionic/react'
-import { add } from 'ionicons/icons'
+import { add, createOutline } from 'ionicons/icons'
 import { LatLng } from 'leaflet'
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
-import './Map.css'
+import './MapPage.css'
+import '../Components/MapControls.css'
 
-import Header from '../components/Header';
-import MapClickHandler from '../components/MapClickHandler'
-import ReportComposer from '../components/ReportComposer'
+import Header from '../components/Header'
 import FixLeafletSize from '../components/FixLeafletSize'
 import MapCenterController from '../components/MapCenterController'
-import { createReport, getReports } from '../services/reportService'
+import MapClickHandler from '../components/MapClickHandler'
+import ReportComposer from '../components/ReportComposer'
 import { getDeviceLocation } from '../services/locationService'
+import { createReport, getReports, updateReport } from '../services/reportService'
 
 import type { Report } from '../services/reportService'
 import type { ReportForm } from '../components/ReportComposer'
@@ -31,17 +30,31 @@ const EMPTY_FORM: ReportForm = {
   description: '',
   severity: 3,
   reportType: 'litter',
+  status: 'open',
   imageFile: null,
   imagePreview: '',
 }
 
-const FALLBACK_CENTER: [number, number] = [37.7749, -122.4194]
+const FALLBACK_CENTER: [number, number] = [39.131174, -84.516213]
+
+function buildFormFromReport(report: Report): ReportForm {
+  return {
+    name: report.name,
+    description: report.description ?? '',
+    severity: report.severity,
+    reportType: report.report_type,
+    status: report.status,
+    imageFile: null,
+    imagePreview: report.imageUrl ?? '',
+  }
+}
 
 export default function MapPage() {
   const [reports, setReports] = useState<Report[]>([])
   const [draftLocation, setDraftLocation] = useState<LatLng | null>(null)
   const [form, setForm] = useState<ReportForm>(EMPTY_FORM)
   const [composerOpen, setComposerOpen] = useState<boolean>(false)
+  const [editingReportId, setEditingReportId] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState<boolean>(false)
   const [locating, setLocating] = useState<boolean>(false)
   const [mapCenter, setMapCenter] = useState<[number, number]>(FALLBACK_CENTER)
@@ -91,20 +104,34 @@ export default function MapPage() {
     }
   }
 
+  function resetComposer() {
+    setComposerOpen(false)
+    setEditingReportId(null)
+    setDraftLocation(null)
+    setForm(EMPTY_FORM)
+  }
+
   function startNewReport() {
+    setEditingReportId(null)
     setForm(EMPTY_FORM)
     setDraftLocation(null)
     setComposerOpen(true)
   }
 
-  function cancelNewReport() {
-    if (submitting) return
-    setComposerOpen(false)
-    setDraftLocation(null)
-    setForm(EMPTY_FORM)
+  function startEditingReport(report: Report) {
+    setEditingReportId(report.report_id)
+    setForm(buildFormFromReport(report))
+    setDraftLocation(new LatLng(report.latitude, report.longitude))
+    setMapCenter([report.latitude, report.longitude])
+    setComposerOpen(true)
   }
 
-  async function submitNewReport() {
+  function cancelComposer() {
+    if (submitting) return
+    resetComposer()
+  }
+
+  async function submitReport() {
     try {
       if (!draftLocation) {
         alert('Tap the map or use your GPS to choose a location first.')
@@ -113,25 +140,44 @@ export default function MapPage() {
 
       setSubmitting(true)
 
-      const saved = await createReport({
-        name: form.name,
-        description: form.description,
-        severity: form.severity,
-        reportType: form.reportType,
-        lat: draftLocation.lat,
-        lng: draftLocation.lng,
-        imageFile: form.imageFile,
-      })
+      if (editingReportId) {
+        const saved = await updateReport({
+          reportId: editingReportId,
+          name: form.name,
+          description: form.description,
+          severity: form.severity,
+          reportType: form.reportType,
+          status: form.status,
+          lat: draftLocation.lat,
+          lng: draftLocation.lng,
+          imageFile: form.imageFile,
+        })
 
-      setReports((current) => [saved, ...current])
-      setComposerOpen(false)
-      setDraftLocation(null)
-      setForm(EMPTY_FORM)
+        setReports((current) =>
+          current.map((report) =>
+            report.report_id === saved.report_id ? saved : report
+          )
+        )
+      } else {
+        const saved = await createReport({
+          name: form.name,
+          description: form.description,
+          severity: form.severity,
+          reportType: form.reportType,
+          lat: draftLocation.lat,
+          lng: draftLocation.lng,
+          imageFile: form.imageFile,
+        })
+
+        setReports((current) => [saved, ...current])
+      }
+
+      resetComposer()
     } catch (error: unknown) {
-      console.error('Failed to create report:', error)
+      console.error('Failed to save report:', error)
 
       const message =
-        error instanceof Error ? error.message : 'Failed to create report.'
+        error instanceof Error ? error.message : 'Failed to save report.'
 
       alert(message)
     } finally {
@@ -141,7 +187,7 @@ export default function MapPage() {
 
   return (
     <IonPage className="map-page">
-      <Header/>
+      <Header />
       <IonHeader>
         <IonToolbar>
           <IonTitle>Litter Map</IonTitle>
@@ -171,17 +217,53 @@ export default function MapPage() {
                 key={report.report_id}
                 position={[report.latitude, report.longitude]}
               >
-                <Popup>
-                  <div>
-                    <strong>{report.name}</strong>
-                    <br />
-                    Severity: {report.severity}
-                    <br />
-                    Type: {report.report_type}
-                    <br />
-                    Status: {report.status}
-                    <br />
-                    {report.description || 'No description'}
+                <Popup className="report-popup" closeButton={false}>
+                  <div className="report-popup-card">
+                    <div className="report-popup-header">
+                      <div>
+                        <div className="report-popup-kicker">Litter Report</div>
+                        <h3 className="report-popup-title">{report.name}</h3>
+                      </div>
+
+                      <div
+                        className={`report-severity-badge severity-${report.severity}`}
+                      >
+                        Severity: {report.severity}
+                      </div>
+                    </div>
+
+                    <p className="report-popup-description">
+                      {report.description || 'No description provided.'}
+                    </p>
+
+                    <div className="report-popup-chips">
+                      <span className="report-chip">
+                        {report.report_type.replace('_', ' ')}
+                      </span>
+                      <span className="report-chip report-chip-status">
+                        {report.status}
+                      </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => startEditingReport(report)}
+                      style={{
+                        marginTop: 12,
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 8,
+                        border: 'none',
+                        borderRadius: 12,
+                        padding: '10px 12px',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <IonIcon icon={createOutline} />
+                      Edit report
+                    </button>
                   </div>
                 </Popup>
               </Marker>
@@ -189,27 +271,33 @@ export default function MapPage() {
 
             {composerOpen && draftLocation && (
               <Marker position={[draftLocation.lat, draftLocation.lng]}>
-                <Popup>New report location</Popup>
+                <Popup>
+                  {editingReportId ? 'Updated report location' : 'New report location'}
+                </Popup>
               </Marker>
             )}
           </MapContainer>
 
           <ReportComposer
             open={composerOpen}
+            mode={editingReportId ? 'edit' : 'create'}
             form={form}
             setForm={setForm}
             location={draftLocation}
             submitting={submitting}
             locating={locating}
             onUseGpsLocation={useGpsForDraftLocation}
-            onCancel={cancelNewReport}
-            onSubmit={submitNewReport}
+            onCancel={cancelComposer}
+            onSubmit={submitReport}
           />
-          <button className="map-add-button" onClick={startNewReport} aria-label="Add report">
+          <button
+            className="map-add-button"
+            onClick={startNewReport}
+            aria-label="Add report"
+          >
             <IonIcon icon={add} />
           </button>
         </div>
-
       </IonContent>
     </IonPage>
   )
