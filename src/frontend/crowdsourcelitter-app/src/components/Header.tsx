@@ -1,47 +1,78 @@
 import React from 'react';
-import { IonHeader, IonToolbar, IonButtons, IonButton, IonImg } from '@ionic/react';
-import { Link, useHistory } from 'react-router-dom';
+import { IonHeader, IonToolbar } from '@ionic/react';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import './Header.css';
 import { useAuthContext } from '../context/AuthContext';
 import { logout } from '../api/authApi';
 
+const NAV_LINKS = [
+  { to: '/home',        label: 'Home'    },
+  { to: '/map',         label: 'Map'     },
+  { to: '/browse-orgs', label: 'Orgs'    },
+  { to: '/org',         label: 'My orgs' },
+];
+
 const Header: React.FC = () => {
   const { isAuthenticated } = useAuthContext();
   const history = useHistory();
+  const location = useLocation();
 
   const handleLogout = async () => {
     await logout();
     history.replace('/login');
-  }
+  };
+
+  const isActive = (path: string) => location.pathname === path;
 
   return (
-    <IonHeader className="cl-margin-bottom-16">
-      <IonToolbar className="header-toolbar">
-        <div className="header-content">
-          <div className="header-logo">
-            <IonImg src="sources/favicon.png" alt="Logo" />
-          </div>
-          <nav className="header-nav">
-            <Link to="/home">Home</Link>
-            <Link to="/map">Map</Link>
-            <Link to="/browse-orgs">Orgs</Link>
-            <Link to="/org">My Org</Link>
-            <Link to="/browse-locations">Browse</Link>
+    <IonHeader className="hdr">
+      <IonToolbar className="hdr-toolbar">
+        <div className="hdr-inner">
 
+          <Link to="/home" className="hdr-logo">
+            <div className="hdr-logo-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"
+                   strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
+                <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </div>
+            <span className="hdr-logo-name">Crowd Source Litter Pickup</span>
+          </Link>
+
+          <nav className="hdr-links">
+            {NAV_LINKS.map(({ to, label }) => (
+              <Link
+                key={to}
+                to={to}
+                className={`hdr-link ${isActive(to) ? 'hdr-link--active' : ''}`}
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="hdr-auth">
+            <div className="hdr-divider" />
             {!isAuthenticated ? (
-            <>
-              <Link to="/signup">Sign Up</Link>
-              <Link to="/login">Log in</Link>
-            </>
+              <>
+                <Link to="/login"  className="hdr-btn-ghost">Log in</Link>
+                <Link to="/signup" className="hdr-btn-solid">Sign up</Link>
+              </>
             ) : (
               <>
-                <Link to="/profile">Profile</Link>
-                <button type="button" className="header-nav-link header-nav-button" onClick={handleLogout}>
-                  Logout
+                <Link to="/profile" className="hdr-btn-ghost">Profile</Link>
+                <button
+                  type="button"
+                  className="hdr-btn-solid"
+                  onClick={handleLogout}
+                >
+                  Log out
                 </button>
               </>
             )}
-          </nav>
+          </div>
+
         </div>
       </IonToolbar>
     </IonHeader>

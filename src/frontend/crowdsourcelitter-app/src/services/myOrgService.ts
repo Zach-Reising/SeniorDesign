@@ -13,6 +13,7 @@ export const getMyOrganizations = async (): Promise<Organization[]> => {
         owner_email: org.owner_email,
         owner_first_name: org.owner_first_name,
         owner_last_name: org.owner_last_name,
+        role: org.role,
         created_at: org.created_at,
         memberCount: org.member_count
     }))

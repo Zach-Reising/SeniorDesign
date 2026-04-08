@@ -11,6 +11,9 @@ import {
     IonSpinner,
     IonText,
     IonToast,
+    IonCardSubtitle,
+    IonCardTitle,
+    IonCardHeader
 } from '@ionic/react';
 import Header from '../components/Header';
 import FormInput from '../components/FormInput';
@@ -90,14 +93,6 @@ const ProfilePage: React.FC = () => {
             <Header />
             <IonContent fullscreen>
                 <IonGrid>
-                    <IonRow>
-                        <IonCol size="12">
-                            <div>
-                                <h1>My Profile</h1>
-                                <p>View and update your personal information</p>
-                            </div>
-                        </IonCol>
-                    </IonRow>
 
                     {loading && (
                         <IonRow className="ion-justify-content-center ion-padding-top">
@@ -124,11 +119,15 @@ const ProfilePage: React.FC = () => {
                         <IonRow className="ion-justify-content-center">
                             <IonCol size="12" sizeMd="8" sizeLg="6">
                                 <IonCard>
-                                <IonCardContent>
-                                    <FormInput
-                                    label="First Name"
-                                    value={firstName}
-                                    position="stacked"
+                                    <IonCardHeader>
+                                        <IonCardTitle>My Profile</IonCardTitle>
+                                        <IonCardSubtitle>Update your information below</IonCardSubtitle>
+                                    </IonCardHeader>
+                                    <IonCardContent>
+                                        <FormInput
+                                            label="First Name"
+                                            value={firstName}
+                                            position="stacked"
                                     placeholder="Enter your first name"
                                     required
                                     error={firstNameError}

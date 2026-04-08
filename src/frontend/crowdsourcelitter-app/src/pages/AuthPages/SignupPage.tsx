@@ -18,6 +18,8 @@ import {
 import Header from '../../components/Header';
 import FormInput from '../../components/FormInput'
 import { register, loginWithOAuth } from '../../api/authApi';
+import { IonIcon } from '@ionic/react';
+import { eyeOutline, eyeOffOutline, logoApple, logoGoogle } from 'ionicons/icons';
 
 const SignupPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -26,6 +28,8 @@ const SignupPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const history = useHistory();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const validatePassword = (pwd: string) => {
       const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
@@ -96,21 +100,53 @@ const SignupPage: React.FC = () => {
                         onChange={setEmail}
                         required
                     />
-                    <FormInput
+                    <div style={{ position: 'relative' }}>
+                      <FormInput
                         label="Password"
-                        type="password"
+                        type={showPassword ? 'text' : 'password'}
                         value={password}
                         onChange={setPassword}
                         required
-                    />
+                      />
+                      <IonIcon
+                        icon={showPassword ? eyeOffOutline : eyeOutline}
+                        onClick={() => setShowPassword(prev => !prev)}
+                        style={{
+                          position: 'absolute',
+                          right: '12px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          cursor: 'pointer',
+                          fontSize: '20px',
+                          color: 'var(--ion-color-medium)',
+                          zIndex: 10,
+                        }}
+                      />
+                    </div>
 
-                    <FormInput
+                    <div style={{ position: 'relative' }}>
+                      <FormInput
                         label="Confirm Password"
-                        type="password"
+                        type={showConfirmPassword ? 'text' : 'password'}
                         value={confirmPassword}
                         onChange={setConfirmPassword}
                         required
-                    />
+                      />
+                      <IonIcon
+                        icon={showConfirmPassword ? eyeOffOutline : eyeOutline}
+                        onClick={() => setShowConfirmPassword(prev => !prev)}
+                        style={{
+                          position: 'absolute',
+                          right: '12px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          cursor: 'pointer',
+                          fontSize: '20px',
+                          color: 'var(--ion-color-medium)',
+                          zIndex: 10,
+                        }}
+                      />
+                    </div>
 
                     {error && (
                         <IonText color="danger" className="cl-margin-8">
@@ -130,17 +166,11 @@ const SignupPage: React.FC = () => {
                   <IonCardTitle>Or</IonCardTitle>
                 </IonCardHeader>
                 <IonCardContent>
-                  <IonButton expand="block" className="google cl-margin-12" onClick={() => handleOAuthSignup('google')}>
-                    Sign in with Google
+                  <IonButton expand="block" className="google cl-margin-12" onClick={() => handleOAuthSignup('google')} disabled>
+                    <IonIcon icon={logoGoogle} />
                   </IonButton>
-                  <IonButton expand="block" className="github cl-margin-12" onClick={() => handleOAuthSignup('github')}>
-                    Sign in with GitHub
-                  </IonButton>
-                  <IonButton expand="block" className="facebook cl-margin-12" onClick={() => handleOAuthSignup('facebook')}>
-                    Continue with Facebook
-                  </IonButton>
-                  <IonButton expand="block" className="apple cl-margin-12" onClick={() => handleOAuthSignup('apple')}>
-                    Sign in with Apple
+                  <IonButton expand="block" className="apple cl-margin-12" onClick={() => handleOAuthSignup('apple')} disabled>
+                    <IonIcon icon={logoApple} />
                   </IonButton>
                 </IonCardContent>
               </IonCard>

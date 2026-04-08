@@ -3,6 +3,8 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext';
 import { login, loginWithOAuth } from '../../api/authApi';
 import FormInput from '../../components/FormInput';
+import { IonIcon } from '@ionic/react';
+import { eyeOutline, eyeOffOutline, logoApple, logoGoogle } from 'ionicons/icons';
 import {
   IonContent,
   IonPage,
@@ -26,6 +28,7 @@ const LoginPage: React.FC = () => {
       const [error, setError] = useState('');
       const [loading, setLoading] = useState(false);
       const[emailVerificationMessage, setEmailVerificationMessage] = useState('');
+      const [showPassword, setShowPassword] = useState(false);
   
       const history = useHistory();
       const location = useLocation();
@@ -39,7 +42,7 @@ const LoginPage: React.FC = () => {
   
       useEffect(() => {
           if (!isLoading && isAuthenticated) {
-              history.replace('/dashboard');
+              history.replace('/map');
           }
       }, [isLoading, isAuthenticated, history]);
   
@@ -51,7 +54,7 @@ const LoginPage: React.FC = () => {
           try {
               await login(email, password);
   
-              history.replace('/dashboard');
+              history.replace('/map');
           } catch (err: any) {
               setError(err.message || 'Login Failed');
           } finally {
@@ -60,7 +63,7 @@ const LoginPage: React.FC = () => {
     };
 
     const handleOAuthLogin = async (
-      provider: 'google' | 'github' | 'facebook' | 'apple'
+      provider: 'google' | 'apple'
     ) => {
       setError('');
 
@@ -103,13 +106,29 @@ const LoginPage: React.FC = () => {
                         required
                       />
 
-                      <FormInput
-                        label="Password"
-                        type="password"
-                        value={password}
-                        onChange={setPassword}
-                        required
-                      />
+                      <div style={{ position: 'relative' }}>
+                        <FormInput
+                          label="Password"
+                          type={showPassword ? 'text' : 'password'}
+                          value={password}
+                          onChange={setPassword}
+                          required
+                        />
+                        <IonIcon
+                          icon={showPassword ? eyeOffOutline : eyeOutline}
+                          onClick={() => setShowPassword(prev => !prev)}
+                          style={{
+                            position: 'absolute',
+                            right: '12px',
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            cursor: 'pointer',
+                            fontSize: '20px',
+                            color: 'var(--ion-color-medium)',
+                            zIndex: 10,
+                          }}
+                        />
+                      </div>
 
                       {error && (
                       <IonText color="danger" className='cl-margin-8'>
@@ -130,17 +149,11 @@ const LoginPage: React.FC = () => {
                     <IonCardTitle>Or</IonCardTitle>
                   </IonCardHeader>
                   <IonCardContent>
-                    <IonButton expand="block" className="google cl-margin-12" onClick={() => handleOAuthLogin('google')}>
-                      Sign in with Google
+                    <IonButton expand="block" className="google cl-margin-12" onClick={() => handleOAuthLogin('google')} disabled>
+                      <IonIcon icon={logoGoogle} />
                     </IonButton>
-                    <IonButton expand="block" className="github cl-margin-12" onClick={() => handleOAuthLogin('github')}>
-                      Sign in with GitHub
-                    </IonButton>
-                    <IonButton expand="block" className="facebook cl-margin-12" onClick={() => handleOAuthLogin('facebook')}>
-                      Continue with Facebook
-                    </IonButton>
-                    <IonButton expand="block" className="apple cl-margin-12" onClick={() => handleOAuthLogin('apple')}>
-                      Sign in with Apple
+                    <IonButton expand="block" className="apple cl-margin-12" onClick={() => handleOAuthLogin('apple')} disabled>
+                      <IonIcon icon={logoApple} />
                     </IonButton>
                   </IonCardContent>
                 </IonCard>

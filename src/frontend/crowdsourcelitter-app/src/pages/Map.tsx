@@ -31,6 +31,8 @@ const EMPTY_FORM: ReportForm = {
   description: '',
   severity: 3,
   reportType: 'litter',
+  imageFile: null,
+  imagePreview: '',
 }
 
 const FALLBACK_CENTER: [number, number] = [37.7749, -122.4194]
@@ -118,6 +120,7 @@ export default function MapPage() {
         reportType: form.reportType,
         lat: draftLocation.lat,
         lng: draftLocation.lng,
+        imageFile: form.imageFile,
       })
 
       setReports((current) => [saved, ...current])

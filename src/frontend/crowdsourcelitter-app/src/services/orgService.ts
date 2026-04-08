@@ -6,6 +6,7 @@ export type Organization = {
     owner_email: string
     owner_first_name: string | null
     owner_last_name: string | null
+    role: string | null
     created_at: string
     memberCount?: number
 }
