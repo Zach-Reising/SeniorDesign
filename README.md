@@ -49,6 +49,6 @@ We are building a crowdsourced litter-pickup site where residents geotag areas w
 8. Budget
     - $20 for Poster Board
 9. Appendix
-    - Each member spent 10 hours on Assignments
+    - Each member spent 20 hours on Assignments
     - Each member spent 15 hours on meetings
-    - Each member spent 20 hours on their code assignments
+    - Each member spent 10 hours on learning what they'll need for the project
