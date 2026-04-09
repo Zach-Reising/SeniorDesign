@@ -47,8 +47,8 @@ We are building a crowdsourced litter-pickup site where residents geotag areas w
 6. [Self-Assessment Essays](./Homework/IndividualCapstoneAssesment/)
 7. [Professional Biographies](./ProfessionalBios/)
 8. Budget
-    - No expenses
+    - $20 for Poster Board
 9. Appendix
-    - Each member spent 20 hours on Assignments
+    - Each member spent 10 hours on Assignments
     - Each member spent 15 hours on meetings
-    - Each member spent 10 hours learning what is needed for the project
+    - Each member spent 20 hours on their code assignments

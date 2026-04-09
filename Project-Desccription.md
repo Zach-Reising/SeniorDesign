@@ -14,4 +14,4 @@
 ## Project Description
 
 
-Crowdsourced Litter Pickup - People mark where litter is bad on certain streets/sites to inform volunteer groups and the city to where cleanup is most needed
+Crowdsource Litter Pickup empowers community members to mark and report areas of heavy litter. This geotagged data is shared with volunteer groups, nonprofits, and city officials to help prioritize and coordinate cleanup efforts. By combining technology, civic participation, and sustainability, this platform promotes greater community involvement in maintaining cleaner, healthier public spaces.
